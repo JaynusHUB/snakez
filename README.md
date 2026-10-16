@@ -88,6 +88,7 @@ Senaryo doğrulamaları (aynı ön koşulla çalışır):
 | `npm run verify:deathfx` | Ölüm yemi efektleri (skin→tema, değer korunumu, FPS, düşük kalite) |
 | `npm run verify:deathfood` | Ölüm yemi sprite hattı (ağ üzerinden yükleme kanıtı, yüklenemezse düz yem) |
 | `npm run verify:runlog` | Tur günlüğü regresyonu (ölüm ekranında sekme gizle/göster turu sıfırlamamalı; TEKRAR/MENÜ tek saymalı) |
+| `npm run verify:seo` | Search Console sahiplik etiketi + başlık/açıklama + statik alt bilgi (gizlilik bağlantısı); kaynak ve `dist/` (build sonrası) |
 
 `scripts/` altındaki `_*.mjs` dosyaları geliştirme sürecinde kullanılan dahili test/araç scriptleridir (npm script'i olarak bağlı değildir).
 

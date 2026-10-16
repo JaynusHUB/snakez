@@ -996,3 +996,59 @@ html.fx-calm .mn-row { animation: none !important; opacity: 1 !important; transf
   html.fx-calm .mn-live { animation: none; }
   html.fx-calm .mn-go:active { transform: none; }
   html.fx-calm .mn-chip:active { transform: none; }
+
+/* ── SİTE ALT BİLGİSİ (index.html) ──────────────────────────────────────
+   Ana sayfanın (menünün) altındaki tek satır: marka + gizlilik bağlantısı.
+   Ham HTML'de statiktir; JS onu KURMAZ — bu yüzden `#menu` DIŞINDA yaşar
+   (menü gövdesini `innerHTML` ile yeniden yazıyor) ve JS'siz açılışta da
+   görünür. Oyun başlayınca menüyle birlikte gizlenir (kardeş kuralı).
+
+   Konum: alt bandın ortası boştur — çipler sol altta, telemetri sağ altta
+   ve 30px yukarıda durur. 1100px ve üzerinde satır çiplerle AYNI tabana
+   (çiplerin formülü: --c-pad * 0.55) çıkar. Dar ekranlarda (çipler ortaya
+   doğru uzar) en alt şeride iner; mobilde telemetrinin altında kalır.
+
+   z-index 21 (menü 20'nin üstünde): bağlantı tıklanabilir kalır; okunabi-
+   lirliği menünün alt karartma gradyanı taşır (ZEMİN kural #1). Tam
+   genişlikte olduğu için `pointer-events: none` ŞART — menü etkileşimlerini
+   yutmamalı; yalnız bağlantı tıklama alır. 12px/--s-muted menü diliyle
+   aynı (çipler: 12px). */
+.sf {
+  position: fixed;
+  left: 0;
+  right: 0;
+  z-index: 21;
+  bottom: calc(2px + env(safe-area-inset-bottom, 0px));
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+.sf p {
+  margin: 0;
+  padding: 0;
+  padding-left: max(8px, env(safe-area-inset-left, 0px));
+  padding-right: max(8px, env(safe-area-inset-right, 0px));
+  color: #a3aecb; /* --s-muted karşılığı: tokenlar `.mn` kapsamında tanımlı */
+  font-family: var(--font-body, 'Exo 2', system-ui, sans-serif);
+  /* 360px'te tek satır kalmalı: 10px'te satır ~281px, alan 344px (ölçüldü);
+     alt sınır 10px — telemetrinin alt kenarıyla dikey pay 1.5px korunur. */
+  font-size: clamp(10px, 1.6vw, 12px);
+  line-height: 1.45;
+  white-space: nowrap;
+}
+.sf a {
+  color: var(--p-ink, #f2f5ff);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+  pointer-events: auto;
+}
+.sf a:hover { color: var(--p-brand-2, #2be7ff); }
+.sf a:focus-visible { outline: 2px solid var(--p-brand-2, #2be7ff); outline-offset: 2px; border-radius: 3px; }
+#menu[hidden] ~ .sf { display: none; }
+
+/* Geniş ekran: satır çiplerle aynı tabana çıkar (ortada boş alan vardır). */
+@media (min-width: 1100px) {
+  .sf { bottom: calc(clamp(20px, 3.4vw, 52px) * 0.55 + env(safe-area-inset-bottom, 0px)); }
+  .sf p { font-size: 12px; }
+}

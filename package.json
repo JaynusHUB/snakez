@@ -18,7 +18,8 @@
     "verify:deathfood": "node scripts/verify-deathfood.mjs",
     "verify:deathfx": "node scripts/verify-deathfx.mjs",
     "verify:clash": "node scripts/verify-clash.mjs",
-    "verify:runlog": "node scripts/verify-runlog.mjs"
+    "verify:runlog": "node scripts/verify-runlog.mjs",
+    "verify:seo": "node scripts/verify-seo.mjs"
   },
   "devDependencies": {
     "playwright": "^1.63.0",
