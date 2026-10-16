@@ -1,153 +1,171 @@
-# Snakez 🐍
+🌐 **English** · [Türkçe](README.tr.md)
 
-Tarayıcıda çalışan 2D yılan arenası — **büyü, sıralamaya tırman.**
+<div align="center">
+  <img src="public/logo.webp" alt="Snakez.io — Yılan Arenası" width="360">
 
-*Snakez is a browser-based snake arena game built with vanilla TypeScript + Canvas 2D.*
+  <h1>Snakez.io</h1>
 
-▶️ **Canlı oyun:** [Oyna](VERCEL_LINKI)
+  <p><b>A browser snake arena where you grow, outmaneuver 30 bot rivals, and climb the board — no install, no account needed.</b></p>
 
-Yem toplayıp yılanını büyüt, bot rakipleri alt et; öldüğünde bıraktığın yemler arenada iz bırakır. Framework kullanılmaz (vanilla TypeScript + sade CSS); oyunun tamamı istemci tarafında çalışır. Supabase yalnızca **opsiyonel** Google girişi ve bulut kayıt için kullanılır — yapılandırılmasa bile oyun uçtan uca çalışır.
+  <p><a href="https://snakez-io.vercel.app"><b>▶ Play now — snakez-io.vercel.app</b></a></p>
 
----
+  <p>
+    <img alt="License: All rights reserved" src="https://img.shields.io/badge/license-All%20rights%20reserved-lightgrey">
+    <img alt="TypeScript" src="https://img.shields.io/badge/language-TypeScript-3178C6?logo=typescript&logoColor=white">
+    <img alt="Vite 8" src="https://img.shields.io/badge/build-Vite%208-646CFF?logo=vite&logoColor=white">
+    <img alt="Playwright" src="https://img.shields.io/badge/tests-Playwright-2EAD33?logo=playwright&logoColor=white">
+  </p>
+</div>
 
-## Özellikler
+## Screenshots
 
-- 🎮 Canvas 2D oyun döngüsü — sabit adımlı simülasyon, FPS ölçümü ve kalite ayarı
-- 🤖 Bot rakipler, büyüme mekaniği, kafa-kafa çarpışması ve ölüm efektleri
-- 🎨 Market: yılan derileri (premium dahil), sandık ödülleri, kariyer ve başarımlar
-- 💀 Ölüm yemleri — ölen yılanlar skin'ine göre özel sprite bırakır (8 tema, WebP)
-- 👤 Google ile giriş + bulut kayıt senkronu (opsiyonel; env boşsa tamamen yerel çalışır)
-- 📱 Mobil dokunmatik kontrol (HIZLAN düğmesi) ve responsive menü
-- 🇹🇷 Türkçe arayüz + gizlilik politikası sayfası (`gizlilik.html`)
+<table>
+  <tr>
+    <td><img src="docs/screenshots/menu.jpg" width="440" alt="Snakez.io main menu"></td>
+    <td><img src="docs/screenshots/gameplay.jpg" width="440" alt="In-game: player snake, bot rivals and food"></td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/death-fx.jpg" width="440" alt="Premium death-food effect"></td>
+    <td><img src="docs/screenshots/market.jpg" width="440" alt="Market — skins tab"></td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/profile-achievements.jpg" width="440" alt="Profile — achievements tab"></td>
+    <td><img src="docs/screenshots/death-screen.jpg" width="440" alt="Run summary on the death screen"></td>
+  </tr>
+  <tr>
+    <td colspan="2" align="center"><img src="docs/screenshots/mobile-menu.jpg" width="220" alt="Mobile main menu (390×844)"></td>
+  </tr>
+</table>
 
-## Teknolojiler
+## Features
 
-| Katman | Teknoloji |
-| --- | --- |
-| Dil | TypeScript ~6.0 (strict) — framework yok, sade CSS |
-| Dev sunucu / build | Vite 8 (Rolldown tabanlı) |
-| Render | Canvas 2D |
-| Arka uç (opsiyonel) | Supabase — auth + profil/bulut kayıt |
-| Fontlar | @fontsource — Chakra Petch, Exo 2 |
-| Doğrulama | Playwright (Chromium) |
+- **Play in seconds** — open the page, type a name, hit PLAY. Guests keep their progress in the browser; no sign-up required.
+- **30 bot rivals per round** — a single-player arena with a live in-round leaderboard plus score, rank, elimination and survival-time HUD.
+- **Grow, boost, collide** — collect food to gain mass; hold the left mouse button (or space bar, or the mobile BOOST button) to speed up. Head-to-head, body and wall collisions decide who drops their mass as food on the floor.
+- **Themed death-food effects** — premium-skinned snakes leave animated, themed pellets (8 premium skins → 8 themes) with glow and sparks where they die.
+- **Market** — spend coins on skins, name styles, profile frames and effects.
+- **Free daily chest & daily deal** — one free chest every day, and one market item goes on sale each day.
+- **Levels, ranks and 28 achievements** — earn XP for score, eliminations and survival time; advance through ranks and unlock achievements with visible progress.
+- **Profile & history** — career stats, best score, total eliminations, playtime; the death screen adds the run summary with a mass graph and level progress.
+- **Optional cloud save** — sign in with Google (Supabase) to sync progress across devices; with no configuration the game runs entirely in guest mode.
+- **Mobile ready** — touch steering and a dedicated BOOST button, with a responsive menu.
+- **Turkish UI** — the game interface is currently Turkish only.
+- **Privacy page** — bundled `gizlilik.html` privacy policy.
 
-## Gereksinimler
+## How it works
 
-- **Node.js 22+** (geliştirme ve testler Node 22.23.2 ile yapıldı)
-- npm 10+
-- Doğrulama scriptleri için Chromium: `npx playwright install chromium`
+Snakez.io is a vanilla TypeScript + Canvas 2D application — no framework and no server-side simulation. A single canvas renders the arena; a fixed-step game loop advances movement and collisions; the meta layer (market, chest, level, achievements, profile) is plain DOM on top. Supabase is used only for optional Google sign-in and cloud save; without it, everything runs locally.
 
-## Kurulum
-
-```bash
-npm install
-cp .env.example .env.local       # Windows PowerShell: Copy-Item .env.example .env.local
-npm run dev                      # http://localhost:5173
+```mermaid
+flowchart TD
+  A["Input — mouse / touch / keyboard"] --> B["Game loop — fixed-step simulation"]
+  B --> C["Collision — head-to-head / body / wall"]
+  C --> D["Death drops — themed food effects"]
+  D --> E["Render — Canvas 2D"]
+  E --> B
+  B --> F["Meta layer — market, chest, level, achievements, profile"]
+  F --> G["localStorage — guest progress"]
+  G -.->|optional Google sign-in| H["Supabase — cloud save"]
 ```
 
-### Ortam değişkenleri
+## Tech
 
-| Değişken | Açıklama |
+| Layer | Choice |
 | --- | --- |
-| `VITE_SUPABASE_URL` | Supabase proje URL'i |
-| `VITE_SUPABASE_ANON_KEY` | Supabase anon (public) anahtarı |
+| Language | TypeScript 6 — no framework, plain CSS |
+| Build & dev server | Vite 8 |
+| Rendering | Canvas 2D |
+| Fonts | Self-hosted Chakra Petch and Exo 2 via @fontsource (no CDN) |
+| Back end (optional) | Supabase — Google sign-in + cloud save |
+| Tests | Playwright (Chromium) |
 
-- Değerler **boş bırakılırsa oyun misafir modda çalışır**; giriş ve bulut kayıt kapalı kalır, oyunun geri kalanı eksiksiz çalışır.
-- Anon anahtar gizli değildir — istemciye gömülür (tasarım gereği). Güvenlik Supabase tarafındaki **RLS** politikalarıyla sağlanır. `service_role` anahtarını asla `.env` dosyalarına ya da repoya koymayın.
-- `.env*` dosyaları `.gitignore`'dadır; yalnızca `.env.example` takip edilir.
-
-## Komutlar
-
-| Komut | Açıklama |
-| --- | --- |
-| `npm run dev` | Geliştirme sunucusu (http://localhost:5173) |
-| `npm run build` | Tip kontrolü (`tsc`) + üretim derlemesi (`dist/`) |
-| `npm run preview` | `dist/` çıktısını yerel olarak servis eder |
-
-## Doğrulama (Playwright)
-
-> Önce `npm run dev` ile **5173 portunda dev sunucusu açık olmalı.** Oyun içi test kancaları (`render_game_to_text`, `advanceTime`, `__menu`, `__poll`) yalnızca geliştirme modunda tanımlıdır; üretim derlemesinde yer almaz.
-
-```bash
-npm run verify                                # Çekirdek döngü: tüm senaryolar (desktop + mobil)
-npm run verify:ui                             # Aynısı, görünür pencerede
-node scripts/verify.mjs --only menu           # Tek senaryo çalıştır
-URL=http://localhost:4173 node scripts/verify.mjs   # Farklı port hedefle
-```
-
-Senaryo doğrulamaları (aynı ön koşulla çalışır):
-
-| Script | Kapsam |
-| --- | --- |
-| `npm run verify:menu` | Menü akışları (isim, kayıt, butonlar) |
-| `npm run verify:brand` | Logo ve üst bandın sade denetimi (hover/dokunmatik/hareket azaltma'da değişmemeli) |
-| `npm run verify:contrast` | Renk kontrastı |
-| `npm run verify:view` | Kamera zoom formülünün ekran boyutundan bağımsızlığı |
-| `npm run verify:food` | Yem ekonomisi (harita büyüklüğü, zemin stoğu yoğunluğu, doğuş doldurma) |
-| `npm run verify:clash` | Kafa-kafa çarpışması (her koşulda taraflardan tam biri ölür) |
-| `npm run verify:deathfx` | Ölüm yemi efektleri (skin→tema, değer korunumu, FPS, düşük kalite) |
-| `npm run verify:deathfood` | Ölüm yemi sprite hattı (ağ üzerinden yükleme kanıtı, yüklenemezse düz yem) |
-| `npm run verify:runlog` | Tur günlüğü regresyonu (ölüm ekranında sekme gizle/göster turu sıfırlamamalı; TEKRAR/MENÜ tek saymalı) |
-| `npm run verify:seo` | Search Console sahiplik etiketi + başlık/açıklama + statik alt bilgi (gizlilik bağlantısı); kaynak ve `dist/` (build sonrası) |
-
-`scripts/` altındaki `_*.mjs` dosyaları geliştirme sürecinde kullanılan dahili test/araç scriptleridir (npm script'i olarak bağlı değildir).
-
-## Proje yapısı
+## Project structure
 
 ```
 src/
-├─ core/       Oyun döngüsü, kamera, ana oyun sınıfı (Game, GameLoop, Camera)
+├─ core/       game loop, camera, main Game class
 ├─ entities/   Snake, Bot, Food, Skin
-├─ systems/    Hareket, çarpışma, render, ölüm efektleri, sprite derileri
-├─ menu/       Ana menü, logo efektleri, arena seçimi, tur günlüğü, yerel depolama
-├─ meta/       Market, sandık, kariyer, başarımlar, profil görünümleri
-├─ auth/       Supabase istemcisi, oturum yönetimi, bulut kayıt
-├─ privacy/    Gizlilik politikası sayfası (gizlilik.html girişi)
-└─ utils/      Sabitler, ayarlar, FPS ölçümü, matematik yardımcıları
-public/        Statik dosyalar (favicon, logo, ölüm yemi sprite'ları)
-scripts/       Doğrulama (Playwright) ve varlık üretim scriptleri
+├─ systems/    movement, collision, rendering, death effects, sprite skins
+├─ menu/       main menu, logo showcase, run log, local storage
+├─ meta/       market, daily chest, career, achievements, profile views
+├─ auth/       Supabase client, session handling, cloud save
+├─ privacy/    privacy policy page (gizlilik.html entry)
+├─ assets/     sprite-skin artwork (webp)
+└─ utils/      constants, settings, FPS meter, math helpers
+public/        static files (favicon, logo, death-food sprites, og.png)
+scripts/       Playwright verification and asset tooling
+docs/          screenshots and social preview image
 ```
 
-Derleme çok sayfalıdır (`index.html` + `gizlilik.html`); kaynak haritası üretilmez ve her JS parçasının başına telif banner'ı eklenir (bkz. `vite.config.ts`).
+The build is multi-page (`index.html` + `gizlilik.html`); no source maps are emitted and every JS chunk begins with a copyright banner (see `vite.config.ts`).
 
-## Ölüm yemi varlıkları
+## Run locally
 
-Ölüm yemi sprite'ları kaynak PNG'lerden üretilir:
+Requirements: **Node.js 22+** and npm 10+. For the Playwright suites, install Chromium once with `npx playwright install chromium`.
 
 ```bash
-node scripts/build-deathfood.mjs   # assets-src/death-food/*.png -> public/death-food/*.webp
+npm ci
+npm run dev      # http://localhost:5173
 ```
 
-Kırpma, ortalama, normalize ve defringe adımlarını uygular (128px kutu, WebP). İdempotenttir; Chromium gerektirir.
+### Environment variables (optional)
 
-> Not: Orijinal tasarım dosyaları (`assets-src/` altındaki yüksek çözünürlüklü PNG kaynakları) bu depoda yer almaz; script yalnızca kaynak PNG'ler yerelde mevcutsa çalışır.
+Copy `.env.example` to `.env.local` if you want sign-in and cloud save:
 
-## Dağıtım (Vercel)
+| Variable | Purpose |
+| --- | --- |
+| `VITE_SUPABASE_URL` | Supabase project URL |
+| `VITE_SUPABASE_ANON_KEY` | Supabase anon (public) key |
 
-1. Repoyu Vercel'e import edin — Framework Preset: **Vite** (otomatik algılanır), Build: `npm run build`, Output: `dist`.
-2. **Environment Variables:** `VITE_SUPABASE_URL` ve `VITE_SUPABASE_ANON_KEY` (Production + Preview).
-3. Supabase → **Authentication → URL Configuration**: Site URL ve Redirect URLs'e dağıtım adresini ekleyin (`https://<proje>.vercel.app`) — aksi hâlde Google girişi geri dönmez.
-4. `vercel.json`, tüm yanıtlara CSP ve `X-Content-Type-Options: nosniff` başlıklarını ekler.
+- Leave both empty and the game runs fully in **guest mode** — sign-in and cloud save stay off, everything else works.
+- The anon key is public by design (it ships in the client); protection comes from Row Level Security on the Supabase side. Never put the `service_role` key in `.env` files or the repo.
+- `.env*` files are gitignored; only `.env.example` is tracked.
 
-> Not: Env değişkenleri eklenmese bile site açılır; yalnızca giriş ve bulut kayıt kapalı kalır.
+## Tests
 
-## Güvenlik notları
+> Start the dev server on port 5173 first. In-game test hooks (`render_game_to_text`, `advanceTime`, `__menu`, `__poll`) are dev-only and never ship in production builds.
 
-- Repoda sır yoktur: `.env*` takip edilmez, yalnızca `.env.example` vardır.
-- Anon anahtar istemciye gömülür (tasarım gereği); tek koruma Supabase **RLS**'tir. `service_role` anahtarı asla istemciye konmaz.
-- Geliştirme kancaları (`__menu`, `__poll`, `render_game_to_text`, `advanceTime`) yalnızca DEV modunda tanımlıdır; üretim derlemesinde bulunmaz.
-- `frame-ancestors` bilinçli olarak tanımlanmamıştır — oyunun iframe ile gömülebilmesi (oyun portalları) istenmiştir.
+```bash
+npm run verify        # core scenarios (desktop + mobile)
+npm run verify:ui     # same, headed window
+```
 
-## Lisans
+| Script | Coverage |
+| --- | --- |
+| `verify:menu` | Menu flows (name, persistence, buttons) |
+| `verify:brand` | Logo and top-bar sanity (unchanged on hover/touch/reduced motion) |
+| `verify:contrast` | Color contrast |
+| `verify:view` | Camera zoom formula independent of viewport size |
+| `verify:food` | Food economy (map size, floor stock density, respawn fill) |
+| `verify:clash` | Head-to-head collisions (exactly one side dies) |
+| `verify:deathfx` | Death-food effects (skin→theme, value conservation, FPS, low quality) |
+| `verify:deathfood` | Death-food sprite pipeline (network load proof; falls back to plain food) |
+| `verify:runlog` | Run-log regression (tab hide/show keeps the run; retry/menu counted once) |
+| `verify:seo` | Search Console meta, title/description, og/twitter tags, footer and README image links (source + `dist/` after build) |
 
-**Snakez.io Özel Lisansı** — © 2026 JAYNUS. Tüm hakları saklıdır.
+## Deployment (Vercel)
 
-Bu depodaki kaynak kodu ve görseller herkese açık olarak **görüntülenebilir**; ancak sahibin yazılı izni olmadan:
+1. Import the repo on Vercel — Framework Preset: **Vite**, Build: `npm run build`, Output: `dist`.
+2. **Environment Variables:** `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` (Production + Preview).
+3. In Supabase → **Authentication → URL Configuration**, set the deploy address (Site URL and Redirect URL), e.g. `https://snakez-io.vercel.app` — otherwise Google sign-in cannot return.
+4. `vercel.json` adds a CSP and `X-Content-Type-Options: nosniff` headers to every response.
 
-- kopyalanamaz, çoğaltılamaz, yeniden dağıtılamaz,
-- değiştirilemez, uyarlanamaz, türev eser üretilemez,
-- satılamaz, alt lisanslanamaz, kiraya verilemez,
-- ticari amaçla kullanılamaz,
-- telif bildirimleri kaldırılamaz veya değiştirilemez.
+> Even without environment variables the site loads; only sign-in and cloud save stay disabled.
 
-Oyunu sahibin sunduğu resmî site üzerinden **oynamak serbesttir.** Üçüncü taraf açık kaynak kütüphaneler ve fontlar kendi lisanslarına tabidir. Tam metin için [LICENSE](LICENSE) dosyasına bakın.
+## Privacy
+
+The game includes a privacy policy page (Turkish): [snakez-io.vercel.app/gizlilik.html](https://snakez-io.vercel.app/gizlilik.html).
+
+## License
+
+**Snakez.io Proprietary License** — © 2026 JAYNUS — all rights reserved. GitHub: [@JaynusHUB](https://github.com/JaynusHUB)
+
+The source code and artwork in this repository are publicly **viewable**, but viewing is not a license. Without the owner's prior written permission you may not:
+
+- copy, reproduce or redistribute the software or any part of it;
+- modify, adapt, translate or create derivative works;
+- sell, sublicense, rent or otherwise commercialize it;
+- use it, in whole or in part, for any commercial purpose;
+- remove or alter the license or copyright notices.
+
+Playing the game on the official website is permitted. Third-party open-source libraries and fonts remain under their own licenses. The software is provided “as is”, without warranty of any kind. See [LICENSE](LICENSE) for the full text.
