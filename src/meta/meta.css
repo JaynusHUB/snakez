@@ -1,0 +1,1012 @@
+#meta{--tier:#9fb3c8;--cy:#2be7ff;--pu:#9d5cff;--li:#a8ff3e;--gr:#5fe08c;--bad:#ff4650;--gold:#ffd35c;--mut:#a8b2d0;--faint:#7b8aa6;
+  --ln:rgb(242 245 255 / 11%);--glass:rgb(9 13 24 / 86%);--brand:linear-gradient(135deg,var(--pu),var(--cy));
+  --ease-out-back:cubic-bezier(.34,1.56,.64,1);--ease-out-expo:cubic-bezier(.16,1,.3,1);--ease-in-out-soft:cubic-bezier(.65,0,.35,1);
+  position:fixed;inset:0;pointer-events:none;z-index:30;font-family:'Exo 2',system-ui,sans-serif;color:#f2f5ff}
+#meta [hidden]{display:none!important}
+#meta small{font-size:10.5px;font-weight:600;letter-spacing:.14em;color:var(--mut)}
+:where(#meta) button{font:inherit;cursor:pointer}
+#meta :focus-visible{outline:2px solid var(--cy);outline-offset:2px}
+#meta h2,#meta h3{margin:0;font-family:'Chakra Petch',sans-serif}
+.ic{width:1em;height:1em;flex:none;vertical-align:-.12em}
+.mt-tn{font:700 11px 'Chakra Petch',sans-serif;letter-spacing:.16em;color:var(--tier);text-transform:uppercase}
+
+/* ortak: halka, çubuk, coin */
+.mt-ring{--s:46px;position:relative;display:grid;place-items:center;width:var(--s);height:var(--s);flex:none;border-radius:50%;
+  background:conic-gradient(var(--tier) calc(var(--p)*1%),rgb(255 255 255 / 10%) 0);box-shadow:0 0 18px color-mix(in srgb,var(--tier) 30%,transparent)}
+.mt-ring::before{content:'';position:absolute;inset:4px;border-radius:50%;background:#0a0e19}
+.mt-ring .bd{position:relative;width:80%;height:80%;overflow:visible}
+.mt-ring.lg{--s:84px}.mt-ring.xl{--s:104px}.mt-ring.lg::before,.mt-ring.xl::before{inset:6px}
+.mt-bar{height:7px;border-radius:9px;background:rgb(255 255 255 / 9%);overflow:hidden}
+.mt-bar i{display:block;height:100%;border-radius:9px;background:linear-gradient(90deg,var(--pu),var(--cy),var(--li));transition:width 1.1s cubic-bezier(.2,0,0,1)}
+.mt-coin{display:inline-flex;align-items:center;gap:6px;font:700 14px 'Chakra Petch',sans-serif;color:var(--gold);white-space:nowrap}
+.mt-coin.big{font-size:18px;padding:6px 12px;border-radius:99px;background:rgb(255 211 92 / 10%);border:1px solid rgb(255 211 92 / 25%)}
+
+/* HUD */
+.mt-hud{position:absolute;inset:0}
+.mt-lv,.mt-lbc,.mt-score,.mt-pf{position:absolute;background:var(--glass);backdrop-filter:blur(12px);border-radius:16px;border:1px solid transparent;
+  background:linear-gradient(var(--glass),var(--glass)) padding-box,linear-gradient(150deg,rgb(157 92 255 / 55%),rgb(255 255 255 / 8%) 45%,rgb(43 231 255 / 50%)) border-box;
+  box-shadow:0 8px 30px rgb(0 0 0 / 35%)}
+.mt-lv{top:max(14px,env(safe-area-inset-top));left:14px;display:flex;align-items:center;gap:12px;padding:10px 14px 10px 10px;min-width:272px}
+.mt-lvtxt{flex:1;display:grid;gap:4px;min-width:0}
+.mt-lvtxt small{letter-spacing:.04em;font-weight:500;white-space:nowrap}
+.mt-lbc{top:max(14px,env(safe-area-inset-top));right:14px;width:236px;padding:12px 8px 10px}
+.mt-lbc h3{display:flex;align-items:center;gap:8px;padding:0 8px 8px;font-size:12px;letter-spacing:.18em;color:var(--tier,#ffd35c)}
+.mt-lbc h3 .ic{color:var(--gold);font-size:15px}.mt-lbc h3 span{flex:1;color:#f2f5ff}
+.mt-lbc h3 small{letter-spacing:.04em;font-weight:500}
+.live{width:7px;height:7px;border-radius:50%;background:var(--gr);box-shadow:0 0 0 0 rgb(95 224 140 / 60%);animation:mt-live 2s infinite}
+.mt-lb{margin:0;padding:0;list-style:none;display:grid;gap:2px}
+.mt-lb li{position:relative;display:grid;grid-template-columns:22px 1fr auto;gap:8px;align-items:center;padding:6px 9px;border-radius:9px;font-size:13px;overflow:hidden}
+.mt-lb li::before{content:'';position:absolute;inset:0 auto 0 0;width:var(--w);background:linear-gradient(90deg,rgb(255 255 255 / 7%),transparent);transition:width .4s}
+.mt-lb li>*{position:relative}
+.mt-lb em{display:grid;place-items:center;width:20px;height:20px;border-radius:7px;font:700 11px 'Chakra Petch',sans-serif;font-style:normal;color:var(--mut);background:rgb(255 255 255 / 6%)}
+.mt-lb span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#dfe6f7}
+.mt-lb b{font:600 12px 'Chakra Petch',sans-serif;color:var(--mut);font-variant-numeric:tabular-nums}
+.mt-lb .r1 em{color:#3a2600;background:linear-gradient(135deg,#ffe58a,#ffb02e)}
+.mt-lb .r2 em{color:#1b2230;background:linear-gradient(135deg,#f0f3f8,#9fb0c8)}
+.mt-lb .r3 em{color:#2e1500;background:linear-gradient(135deg,#f0b27a,#c06a2b)}
+.mt-lb .r1 span{color:#fff;font-weight:600}
+.mt-lb .me{background:linear-gradient(90deg,rgb(43 231 255 / 22%),rgb(43 231 255 / 4%));box-shadow:inset 0 0 0 1px rgb(43 231 255 / 45%)}
+.mt-lb .me span{color:var(--cy);font-weight:600}.mt-lb .me b{color:var(--gr)}.mt-lb .me em{color:#04060c;background:var(--cy)}
+.mt-lb .gap{margin-top:6px}.mt-lb .gap::after{content:'';position:absolute;left:12px;right:12px;top:-5px;border-top:1px dashed var(--ln)}
+.mt-lbf{margin:8px 8px 0;padding-top:8px;border-top:1px solid var(--ln);font-size:12px;color:var(--mut)}
+.mt-score{left:14px;bottom:max(14px,env(safe-area-inset-bottom));display:flex;align-items:stretch;gap:2px;padding:6px}
+.mt-score>div{display:grid;gap:1px;align-content:center;padding:4px 14px;border-radius:11px}
+.mt-score>div+div{border-left:1px solid var(--ln);border-radius:0}
+.mt-score b{font:700 20px 'Chakra Petch',sans-serif;font-variant-numeric:tabular-nums}.mt-score u{text-decoration:none;font-size:12px;color:var(--faint)}
+.mt-score .main b{font-size:30px;line-height:1;background:var(--brand);-webkit-background-clip:text;background-clip:text;color:transparent}
+.mt-pops{position:absolute;left:50%;top:26%;transform:translateX(-50%);display:grid;justify-items:center;gap:6px}
+.mt-pops div{padding:6px 14px;border-radius:99px;font:700 14px 'Chakra Petch',sans-serif;color:#04060c;background:var(--brand);box-shadow:0 0 22px rgb(43 231 255 / 40%);animation:mt-pop 1.6s ease-out forwards}
+
+/* Katmanlar */
+.mt-over,.mt-modal{position:absolute;inset:0;display:grid;place-items:center;padding:16px;pointer-events:auto;overflow:auto;animation:mt-fade .35s ease-out both}
+.mt-over{background:radial-gradient(ellipse at 50% 40%,rgb(60 14 28 / 45%),rgb(4 6 12 / 92%) 70%)}
+.mt-modal{background:rgb(4 6 12 / 78%);z-index:2}
+.mt-card,.dv{border-radius:22px;border:1px solid transparent;
+  background:linear-gradient(#0d1220,#090d18) padding-box,linear-gradient(150deg,rgb(157 92 255 / 70%),rgb(255 255 255 / 8%) 45%,rgb(43 231 255 / 65%)) border-box;
+  box-shadow:0 30px 90px rgb(0 0 0 / 65%),0 0 50px rgb(157 92 255 / 12%);animation:mt-rise .5s cubic-bezier(.2,0,0,1) both}
+.mt-card{width:min(460px,100%);padding:22px}
+.mt-card>header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.mt-card>header h2{font-size:22px;letter-spacing:.16em}
+.mt-x{width:44px;height:44px;margin:-8px -8px -8px 0;border:0;border-radius:12px;background:transparent;color:var(--mut);font-size:16px}
+.mt-x:hover{background:rgb(255 255 255 / 8%);color:#fff}
+
+/* Oyun-içi ayarlar (Esc): menü paneliyle aynı dil, meta kartı üstünde. */
+.mt-card.st{width:min(380px,100%);padding:20px 20px 16px}
+.mt-setopts{display:flex;gap:8px;margin:2px 0 4px}
+.mt-setopts button{flex:1;padding:10px 0;border-radius:10px;border:1px solid var(--ln);background:transparent;color:var(--mut);
+  font-family:'Chakra Petch',sans-serif;font-size:13px;letter-spacing:.04em}
+.mt-setopts button:hover{color:#fff;border-color:var(--cy)}
+.mt-setopts button[aria-checked="true"]{color:#fff;border-color:var(--cy);box-shadow:0 0 0 2px var(--cy),0 6px 26px -6px rgb(43 231 255 / 60%)}
+.mt-note{margin:6px 0 10px;font-size:12px;color:var(--faint)}
+.mt-setrow{margin:2px 0 4px;width:100%;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;
+  border-radius:10px;border:1px solid var(--ln);background:transparent;color:var(--mut);
+  font-family:'Chakra Petch',sans-serif;font-size:13px}
+.mt-setrow b{color:#fff}
+.mt-setrow:hover{border-color:var(--cy)}
+
+/* Ölüm ekranı */
+.dv{display:grid;grid-template-columns:1.1fr .9fr;width:min(860px,100%);overflow:hidden}
+.dv-l,.dv-r{padding:28px 28px 22px;display:grid;gap:14px;align-content:start}
+.dv-r{background:linear-gradient(180deg,rgb(255 255 255 / 3.5%),rgb(255 255 255 / 1%));border-left:1px solid var(--ln)}
+.dv-l>*,.dv-r>*{animation:mt-in .5s cubic-bezier(.2,0,0,1) both}
+.dv-l>:nth-child(2),.dv-r>:nth-child(2){animation-delay:.08s}.dv-l>:nth-child(3),.dv-r>:nth-child(3){animation-delay:.16s}
+.dv-l>:nth-child(4),.dv-r>:nth-child(4){animation-delay:.24s}.dv-l>:nth-child(5){animation-delay:.32s}
+.dv-eye{display:flex;align-items:center;gap:10px;margin:0;font-size:13px;color:#ffb3b8}
+.dv-eye .ic{font-size:22px;color:var(--bad);filter:drop-shadow(0 0 8px rgb(255 70 80 / 55%))}.dv-eye b{color:#fff}
+.dv-l h2{font-size:40px;line-height:1;letter-spacing:.14em;color:var(--bad);text-shadow:0 0 30px rgb(255 70 80 / 40%)}
+.dv-score{display:flex;align-items:flex-end;flex-wrap:wrap;gap:4px 14px}.dv-score small{width:100%}
+.dv-score>b{font:700 68px/.95 'Chakra Petch',sans-serif;font-variant-numeric:tabular-nums;text-shadow:0 0 34px rgb(43 231 255 / 35%)}
+.dv-new,.dv-pct{display:inline-flex;align-items:center;gap:6px;margin-bottom:8px;padding:5px 11px;border-radius:99px;font:700 11px 'Chakra Petch',sans-serif;letter-spacing:.14em}
+.dv-new{color:#04060c;background:linear-gradient(90deg,var(--gold),var(--li));animation:mt-pop-in .6s .6s cubic-bezier(.3,1.6,.5,1) both}
+.dv-pct{color:var(--mut);background:rgb(255 255 255 / 7%)}
+.dv-spark{display:grid;gap:6px;padding:12px 14px;border-radius:14px;background:rgb(255 255 255 / 4%);border:1px solid var(--ln)}
+.dv-spark svg{width:100%;height:56px;display:block}
+.dv-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.dv-grid div{display:grid;gap:3px;justify-items:start;padding:11px 12px;border-radius:13px;background:rgb(255 255 255 / 4%);border:1px solid var(--ln)}
+.dv-grid .ic{font-size:17px;color:var(--cy)}.dv-grid small{font-size:9.5px;letter-spacing:.1em}
+.dv-grid b{font:700 20px 'Chakra Petch',sans-serif;font-variant-numeric:tabular-nums}
+.dv-lvl{display:flex;align-items:center;gap:16px}.dv-lvl>div:last-child{flex:1;display:grid;gap:5px}
+.dv-lvl h3{font-size:22px}
+.dv-up{display:flex;align-items:center;gap:12px;margin:0;padding:12px 14px;border-radius:14px;color:#04060c;background:var(--brand);
+  box-shadow:0 0 34px rgb(43 231 255 / 30%);animation:mt-pop-in .7s .55s cubic-bezier(.3,1.6,.5,1) both!important}
+.dv-up .ic{font-size:24px}.dv-up span{display:grid;font:700 12px 'Chakra Petch',sans-serif;letter-spacing:.12em}
+.dv-up b{font-size:18px;letter-spacing:.06em}.dv-up em{font-style:normal;font-weight:600;letter-spacing:.04em;opacity:.8}
+.dv-xp{margin:0;padding:0;list-style:none;display:grid;gap:2px}
+.dv-xp li{display:flex;justify-content:space-between;padding:8px 2px;border-bottom:1px solid var(--ln);font-size:13.5px;color:var(--mut)}
+.dv-xp b{font:600 14px 'Chakra Petch',sans-serif;color:#f2f5ff}.dv-xp .mul b{color:var(--li)}.dv-xp .mul{color:var(--li)}
+.dv-tot{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.dv-tot>div{position:relative;display:grid;gap:2px;padding:12px 14px;border-radius:14px;background:rgb(255 255 255 / 5%);border:1px solid var(--ln)}
+.dv-tot b{font:700 28px 'Chakra Petch',sans-serif;font-variant-numeric:tabular-nums}
+.dv-tot .xp{color:var(--cy)}.dv-tot .co{color:var(--gold)}.dv-tot .ic{position:absolute;right:12px;bottom:14px;font-size:22px}
+.dv-act{grid-column:1/-1;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:8px;padding:16px 28px 24px;border-top:1px solid var(--ln);background:rgb(0 0 0 / 22%)}
+.dv-act button{min-height:50px;border-radius:13px;border:1px solid var(--ln);background:rgb(255 255 255 / 6%);color:#f2f5ff;font-weight:600;font-size:14px;transition:transform .12s,background .15s,border-color .15s}
+.dv-act button:hover{background:rgb(255 255 255 / 12%);border-color:rgb(242 245 255 / 25%)}
+.dv-act button:active{transform:scale(.97)}
+.dv-act .mt-cta{border:0;font:700 17px 'Chakra Petch',sans-serif;letter-spacing:.1em;color:#04060c;background:linear-gradient(90deg,#f2f5ff,#bfefff);box-shadow:0 0 28px rgb(43 231 255 / 32%)}
+.dv-act .mt-cta:hover{background:linear-gradient(90deg,#fff,#d6f7ff);transform:translateY(-1px)}
+#meta kbd{margin-left:8px;padding:2px 7px;border-radius:6px;font:600 11px 'Chakra Petch',sans-serif;background:rgb(4 6 12 / 16%)}
+
+/* İlerleme */
+.pg{width:min(480px,100%)}
+.pg-top{display:flex;align-items:center;gap:18px}.pg-top>div:last-child{flex:1;display:grid;gap:6px}
+.pg-top h3{font-size:26px}.pg-top u{text-decoration:none;font-size:15px;color:var(--faint)}
+.pg-sum{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:16px 0}
+.pg-sum div{display:grid;gap:2px;padding:10px 12px;border-radius:12px;background:rgb(255 255 255 / 5%);border:1px solid var(--ln)}
+.pg-sum b{font:700 19px 'Chakra Petch',sans-serif}
+.pg-tiers{margin:0;padding:0;list-style:none;display:grid;gap:6px}
+.pg-tiers li{display:grid;grid-template-columns:30px 1fr auto;gap:12px;align-items:center;padding:9px 12px;border-radius:12px;border:1px solid var(--ln);background:rgb(255 255 255 / 3%)}
+.pg-tiers b{display:block;font:700 14px 'Chakra Petch',sans-serif;color:var(--tier)}.pg-tiers small{letter-spacing:.04em;font-weight:500}
+.pg-tiers em{font-style:normal;font-size:12px;color:var(--faint)}
+.pg-tiers .lock{opacity:.6}
+.pg-tiers .now{border-color:color-mix(in srgb,var(--tier) 55%,transparent);background:linear-gradient(90deg,color-mix(in srgb,var(--tier) 16%,transparent),transparent)}
+.pg-tiers .now em{color:var(--tier);font-weight:700}
+.pg-tiers .done em{color:var(--gr)}
+
+/* Market */
+.mt-ico{display:grid;place-items:center;width:48px;height:48px;border-radius:14px;font-size:22px;color:var(--cy);background:rgb(43 231 255 / 9%);border:1px solid rgb(43 231 255 / 20%)}
+.own{display:flex;align-items:center;gap:8px;margin-top:6px}.own small{margin:0}
+.pips{display:flex;gap:3px}.pips i{width:16px;height:5px;border-radius:3px;background:rgb(255 255 255 / 12%)}.pips i.on{background:var(--li)}
+.mt-note{margin:-4px 0 14px;font-size:13px;color:var(--mut);min-height:18px}
+
+@keyframes mt-fade{from{opacity:0}}
+@keyframes mt-rise{from{opacity:0;transform:translateY(18px) scale(.97)}}
+@keyframes mt-in{from{opacity:0;transform:translateY(10px)}}
+@keyframes mt-pop-in{from{opacity:0;transform:scale(.8)}}
+@keyframes mt-pop{0%{opacity:0;transform:translateY(10px) scale(.9)}15%{opacity:1;transform:none}75%{opacity:1}100%{opacity:0;transform:translateY(-18px)}}
+@keyframes mt-live{70%{box-shadow:0 0 0 7px rgb(95 224 140 / 0%)}100%{box-shadow:0 0 0 0 rgb(95 224 140 / 0%)}}
+
+@media (max-width:760px){
+  .dv{grid-template-columns:1fr}.dv-r{border-left:0;border-top:1px solid var(--ln)}
+  .dv-l,.dv-r{padding:20px 18px 14px}.dv-l h2{font-size:32px}.dv-score>b{font-size:54px}
+  .dv-grid{grid-template-columns:repeat(2,1fr)}
+  .dv-act{grid-template-columns:1fr 1fr 1fr;padding:14px 18px 20px}.dv-act .mt-cta{grid-column:1/-1}
+  .mt-over{place-items:start center}
+}
+@media (max-width:640px){
+  .mt-lbc{width:176px;padding:10px 6px 8px}.mt-lb li:nth-child(n+6):not(.me){display:none}.mt-lbf,.mt-lbc h3 small{display:none}
+  .mt-lv{min-width:0;max-width:calc(100% - 204px);padding:8px}.mt-lv .mt-coin{display:none}.mt-lvtxt small{display:none}.mt-ring{--s:40px}
+  .mt-score>div{padding:3px 9px}.mt-score b{font-size:16px}.mt-score .main b{font-size:24px}.mt-score>div:nth-child(n+4){display:none}
+}
+@media (max-height:620px){.dv-spark{display:none}}
+html.fx-calm .mt-over,html.fx-calm .mt-modal,html.fx-calm .mt-card,html.fx-calm .dv,html.fx-calm .dv>*,html.fx-calm .dv-l>*,html.fx-calm .dv-r>*,html.fx-calm .dv-up,html.fx-calm .dv-new,html.fx-calm .live,html.fx-calm .pf-chest,html.fx-calm .pf-chest .dot::after,html.fx-calm .ch-box,html.fx-calm .ch-rays,html.fx-calm .ch-rays2,html.fx-calm .ch-halo,html.fx-calm .ch-beam,html.fx-calm .ch-ring,html.fx-calm .ch-flash,html.fx-calm .ch-prize,html.fx-calm .ch-coin3d,html.fx-calm .ch-pill,html.fx-calm .ch-amt,html.fx-calm .ch-seri,html.fx-calm .ch-eq,html.fx-calm .ch-row button,html.fx-calm .ch-bar i,html.fx-calm .ch-leak,html.fx-calm .ch-seamglow,html.fx-calm .ch-shake{animation:none!important}
+html.fx-calm .mt-bar i,html.fx-calm .mt-lb li::before,html.fx-calm .dv-act button{transition:none}html.fx-calm .mt-pops div{animation-duration:.01s;animation-delay:1.4s}
+
+/* Rozetler */
+@property --p{syntax:'<number>';inherits:false;initial-value:0}
+.mt-ring{transition:--p .6s ease-out}.mt-ring.sm{--s:44px}.mt-ring.sm::before{inset:3px}
+.bd{filter:drop-shadow(0 0 4px color-mix(in srgb,var(--tier) 55%,transparent))}
+.bd-b,.bd-x{fill:var(--tier);stroke:rgb(255 255 255 / 50%);stroke-width:1.4;stroke-linejoin:round}
+.bd-x{stroke:rgb(0 0 0 / 25%)}
+.bd-g{fill:#fff;opacity:.22;clip-path:inset(0 0 52% 0)}
+.bd-p circle{fill:#0a0e19;opacity:.6}
+.bd text{font-family:'Chakra Petch',sans-serif;font-weight:700;fill:#0a0e19}
+.bd.t7{animation:mt-shine 2.6s ease-in-out infinite}.bd.t6 .bd-x{animation:mt-shine 3.2s ease-in-out infinite}
+@keyframes mt-shine{50%{filter:drop-shadow(0 0 11px var(--tier)) brightness(1.18)}}
+.pg-tiers .emb{display:grid;place-items:center;width:40px;height:36px}.pg-tiers .emb .bd{width:100%;height:100%}
+.pg-tiers .lock .emb{filter:grayscale(1) opacity(.4)}
+
+/* Canlı XP efektleri */
+.mt-side{display:grid;justify-items:end;gap:3px}
+.mt-run{font:700 11px 'Chakra Petch',sans-serif;letter-spacing:.06em;color:var(--cy)}
+.mt-lv .mt-bar i{transition:width .6s ease-out,filter .4s,box-shadow .4s}
+.mt-lv.gain .mt-bar i{filter:brightness(1.35);box-shadow:0 0 12px var(--cy)}
+.mt-lv.lvup{animation:mt-lvup 1.1s ease-out}
+@keyframes mt-lvup{30%{transform:scale(1.06);box-shadow:0 0 44px var(--tier)}}
+.mt-gain{position:absolute;left:50%;bottom:calc(100% + 8px);font:700 13px 'Chakra Petch',sans-serif;color:var(--li);text-shadow:0 0 12px rgb(168 255 62 / 70%);pointer-events:none;animation:mt-gain 1.2s ease-out forwards;white-space:nowrap}
+@keyframes mt-gain{0%{opacity:0;transform:translateX(-50%) translateY(6px)}20%{opacity:1}100%{opacity:0;transform:translateX(-50%) translateY(-30px)}}
+.mt-pops div.up{padding:9px 20px;font-size:16px;background:linear-gradient(90deg,var(--gold),var(--li))}
+
+/* Menü profil çipi (rozet + coin + Market) */
+.mt-pf{top:max(14px,env(safe-area-inset-top));left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:12px;padding:6px 8px;border-radius:99px;pointer-events:auto}
+.pf-id{display:flex;align-items:center;gap:10px;min-height:44px;padding:0 8px 0 0;border:0;background:none;color:inherit;text-align:left;border-radius:99px}
+.pf-id:hover b{color:#fff}.pf-id span{display:grid}.pf-id b{font:700 13px 'Chakra Petch',sans-serif;color:var(--tier)}
+.pf-shop{min-height:44px;padding:0 20px;border:0;border-radius:99px;font:700 13px 'Chakra Petch',sans-serif;letter-spacing:.12em;color:#2b1d00;background:linear-gradient(180deg,#ffe58a,#ffc233);box-shadow:0 0 22px rgb(255 211 92 / 30%);transition:transform .12s}
+/* Günlük sandık: MARKET'in yanında. Hazırsa ping noktalı altın nabız. */
+.pf-chest{position:relative;display:grid;place-items:center;width:44px;height:44px;border:1px solid var(--ln);border-radius:14px;background:rgb(255 255 255 / 4%);color:var(--faint)}
+.pf-chest .ic{width:24px;height:24px}
+.pf-chest:hover{color:#fff;border-color:var(--gold)}
+.pf-chest.ready{color:var(--gold);border-color:rgb(255 211 92 / 55%);animation:ch-ready 1.6s ease-in-out infinite}
+.pf-chest .dot{position:absolute;top:5px;right:5px;width:9px;height:9px;border-radius:50%;background:var(--gold);opacity:0}
+.pf-chest.ready .dot{opacity:1}
+.pf-chest.ready .dot::after{content:"";position:absolute;inset:0;border-radius:50%;background:var(--gold);animation:ch-ping 1.6s ease-out infinite}
+@keyframes ch-ping{0%{transform:scale(1);opacity:.7}100%{transform:scale(2.8);opacity:0}}
+@keyframes ch-ready{50%{box-shadow:0 0 18px rgb(255 211 92 / 55%)}}
+/* Sandık modali: tam ekran parçacık tuvali + vinyet, kart ortada. */
+[data-chest]{--rc:#ffd35c;--rc2:#ffe58a;--rc-rgb:255 211 92;--ease-in-soft:cubic-bezier(.32,0,.67,0);place-items:start center}
+[data-chest][data-view="open"][data-tier="nadir"]{--rc:#4ee063;--rc2:#c4ffcc;--rc-rgb:78 224 99}
+[data-chest][data-view="open"][data-tier="epik"]{--rc:#b46bff;--rc2:#e6d0ff;--rc-rgb:180 107 255}
+[data-chest] .ch-fx{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+[data-chest]::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse at 50% 44%,rgb(0 0 0 / 8%) 28%,rgb(0 0 0 / 66%) 100%);
+  opacity:0;transition:opacity .8s var(--ease-in-out-soft)}
+[data-chest][data-view="open"].is-done::before{opacity:1}
+[data-chest] .ch-flash{position:absolute;inset:0;pointer-events:none;opacity:0;--fa:.42;
+  background:radial-gradient(circle at 50% 46%,#fff 0,rgb(var(--rc-rgb) / 85%) 55%,rgb(var(--rc-rgb) / 55%) 100%)}
+[data-chest][data-view="open"][data-tier="nadir"] .ch-flash{--fa:.52}
+[data-chest][data-view="open"][data-tier="epik"] .ch-flash{--fa:.66}
+[data-chest][data-view="open"].is-burst .ch-flash{animation:ch-flash .12s ease-out both}
+@keyframes ch-flash{0%{opacity:0}18%{opacity:var(--fa)}100%{opacity:0}}
+.mt-card.ch{position:relative;width:min(360px,100%);margin:auto;padding:20px;text-align:center;overflow:hidden}
+.ch-edge{position:absolute;inset:0;border-radius:22px;pointer-events:none;opacity:0;z-index:0;
+  box-shadow:inset 0 0 0 1px rgb(var(--rc-rgb,255 211 92) / 55%),inset 0 0 44px rgb(var(--rc-rgb,255 211 92) / 14%);
+  transition:opacity .5s var(--ease-out-expo)}
+[data-chest][data-view="open"].is-burst .ch-edge{opacity:1}
+.ch-hd{position:relative;z-index:3;display:flex;justify-content:space-between;align-items:center;margin-bottom:2px}
+.ch-hd h2{font-size:22px;letter-spacing:.16em}
+/* Sahne */
+.ch-stage{--sh:260px;--cw:156px;--seam:calc(var(--sh) - 10px - var(--cw)*.4125);--fxy:calc(var(--seam) - 34px);position:relative;height:var(--sh);margin:0 -4px}
+@media (max-height:700px){.ch-stage{--sh:216px;--cw:132px}}
+@media (max-height:640px){.ch-stage{--sh:172px;--cw:106px}}
+/* Işın katmanları */
+.ch-rw,.ch-rw2{position:absolute;left:50%;top:var(--fxy);width:440px;height:440px;margin:-220px 0 0 -220px;pointer-events:none;opacity:0;transform:scale(.55);
+  transition:opacity .8s var(--ease-in-out-soft),transform .9s var(--ease-out-expo)}
+.ch-rays,.ch-rays2{position:absolute;inset:0;border-radius:50%;animation:ch-spin 11s linear infinite;
+  background:repeating-conic-gradient(from 0deg,rgb(var(--rc-rgb,255 211 92) / 58%) 0 6deg,transparent 6deg 22.5deg);
+  -webkit-mask-image:radial-gradient(circle,#000 8%,transparent 66%);mask-image:radial-gradient(circle,#000 8%,transparent 66%)}
+.ch-rays2{background:repeating-conic-gradient(from 8deg,rgb(255 255 255 / 32%) 0 2.4deg,transparent 2.4deg 12deg);animation-duration:17s;animation-direction:reverse}
+@keyframes ch-spin{to{transform:rotate(360deg)}}
+.mt-card.ch[data-phase="tension"] .ch-rays{animation:ch-spin 5s linear infinite}
+[data-chest][data-view="open"].is-tension .ch-rw{opacity:.5;transform:scale(1)}
+[data-chest][data-view="open"].is-burst .ch-rw{opacity:.95;transform:scale(1.14)}
+[data-chest][data-view="open"].is-done .ch-rw{opacity:.16;transform:scale(1.1)}
+[data-chest][data-view="open"].is-done .ch-rays,[data-chest][data-view="open"].is-done .ch-rays2{animation-play-state:paused}
+.ch-rw2{display:none}
+[data-chest][data-view="open"][data-tier="epik"] .ch-rw2{display:block}
+[data-chest][data-view="open"][data-tier="epik"].is-burst .ch-rw2{opacity:.75;transform:scale(1.22)}
+[data-chest][data-view="open"][data-tier="epik"].is-done .ch-rw2{opacity:.1}
+/* Hale */
+.ch-halo{position:absolute;left:50%;top:var(--fxy);width:330px;height:330px;margin:-165px 0 0 -165px;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle,rgb(var(--rc-rgb,255 211 92) / 64%) 0,rgb(var(--rc-rgb,255 211 92) / 20%) 40%,transparent 68%);
+  opacity:.2;transform:scale(.6);transition:opacity .8s var(--ease-in-soft),transform .8s var(--ease-in-soft)}
+.mt-card.ch[data-phase="idle"] .ch-halo{animation:ch-halo-idle 3.4s ease-in-out infinite}
+@keyframes ch-halo-idle{0%,100%{opacity:.34;transform:scale(.78)}50%{opacity:.58;transform:scale(.92)}}
+[data-chest][data-view="open"].is-tension .ch-halo{opacity:.9;transform:scale(1.05)}
+[data-chest][data-view="open"].is-burst .ch-halo{opacity:1;transform:scale(1.5);transition-duration:.28s,.28s;transition-timing-function:var(--ease-out-expo)}
+[data-chest][data-view="open"].is-reveal .ch-halo{opacity:.78;transform:scale(1.28);transition-duration:.7s,.7s}
+[data-chest][data-view="open"].is-done .ch-halo{opacity:.5;transform:scale(1.14)}
+[data-chest][data-view="open"][data-tier="epik"].is-burst .ch-halo{transform:scale(1.8)}
+[data-chest][data-view="open"][data-tier="epik"].is-reveal .ch-halo{transform:scale(1.5)}
+/* Işık sütunu + şok halkaları */
+.ch-beam{position:absolute;left:50%;bottom:calc(var(--sh) - var(--seam));width:130px;height:200px;margin-left:-65px;pointer-events:none;z-index:1;opacity:0;transform:scaleY(0);transform-origin:50% 100%;
+  background:linear-gradient(to top,rgb(255 250 224 / 96%),rgb(var(--rc-rgb,255 211 92) / 46%) 42%,transparent);clip-path:polygon(32% 100%,68% 100%,100% 0,0 0)}
+[data-chest][data-view="open"].is-burst .ch-beam{animation:ch-beam 1s var(--ease-out-expo) both}
+@keyframes ch-beam{0%{opacity:1;transform:scale(.6,.1)}25%{opacity:1;transform:scale(1,1)}100%{opacity:0;transform:scale(1.3,1.05)}}
+.ch-ring{position:absolute;left:50%;top:var(--seam);width:150px;height:150px;margin:-75px 0 0 -75px;border-radius:50%;pointer-events:none;z-index:1;opacity:0;transform:scale(.2);border:3px solid rgb(var(--rc-rgb,255 211 92) / 92%)}
+.ch-ring.r2{border:2px solid #fff;display:none}
+[data-chest][data-view="open"][data-tier="nadir"] .ch-ring.r2,[data-chest][data-view="open"][data-tier="epik"] .ch-ring.r2{display:block}
+[data-chest][data-view="open"].is-burst .ch-ring{animation:ch-ring .8s var(--ease-out-expo) both}
+[data-chest][data-view="open"].is-burst .ch-ring.r2{animation:ch-ring .8s var(--ease-out-expo) .12s forwards}
+@keyframes ch-ring{0%{opacity:.95;transform:scale(.2)}100%{opacity:0;transform:scale(3.4)}}
+/* Sandık */
+.ch-box{position:absolute;left:50%;bottom:10px;width:var(--cw);height:calc(var(--cw)*.75);margin-left:calc(var(--cw)/-2);transform-origin:50% 100%;z-index:2}
+.ch-box svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.mt-card.ch[data-phase="idle"] .ch-box{animation:ch-wob 4.4s ease-in-out infinite}
+[data-chest].is-wait .ch-box{animation:none;opacity:.58}
+@keyframes ch-wob{0%,70%,100%{transform:translateY(0) rotate(0)}35%{transform:translateY(-4px) rotate(0)}74%{transform:translateY(0) rotate(-3.5deg)}78%{transform:translateY(0) rotate(3.5deg)}82%{transform:translateY(0) rotate(-2deg)}86%{transform:translateY(0) rotate(1deg)}90%{transform:translateY(0) rotate(0)}}
+[data-chest][data-view="open"].is-tension .ch-box{animation:ch-tense .8s linear both}
+@keyframes ch-tense{
+  0%{transform:translate3d(0,0,0) rotate(0) scale(1,1)}
+  6%{transform:translate3d(-1px,0,0) rotate(-1.2deg) scale(1.01,.99)}
+  12%{transform:translate3d(1px,0,0) rotate(1.5deg) scale(.99,1.01)}
+  19%{transform:translate3d(-1px,0,0) rotate(-2.1deg) scale(1.02,.98)}
+  26%{transform:translate3d(2px,0,0) rotate(2.5deg) scale(.99,1.02)}
+  33%{transform:translate3d(-2px,0,0) rotate(-3.1deg) scale(1.03,.97)}
+  40%{transform:translate3d(2px,0,0) rotate(3.5deg) scale(.98,1.03)}
+  47%{transform:translate3d(-2px,0,0) rotate(-4.2deg) scale(1.03,.97)}
+  54%{transform:translate3d(3px,0,0) rotate(4.8deg) scale(.98,1.03)}
+  61%{transform:translate3d(-3px,0,0) rotate(-5.5deg) scale(1.04,.96)}
+  68%{transform:translate3d(3px,0,0) rotate(6deg) scale(.98,1.03)}
+  75%{transform:translate3d(-3px,0,0) rotate(-6.5deg) scale(1.04,.96)}
+  82%{transform:translate3d(1px,0,0) rotate(3deg) scale(1.03,.97)}
+  88%{transform:translate3d(0,0,0) rotate(0) scale(1.07,.92)}
+  100%{transform:translate3d(0,0,0) rotate(0) scale(1.07,.92)}
+}
+[data-chest][data-view="open"].is-burst .ch-box{animation:ch-pop .62s var(--ease-out-back) both}
+@keyframes ch-pop{0%{transform:scale(1.07,.92)}28%{transform:scale(.9,1.14)}58%{transform:scale(1.04,.97)}100%{transform:scale(1,1)}}
+.ch-box.open{filter:drop-shadow(0 0 26px rgb(255 211 92 / 70%))}
+.ch-lid{transform-origin:9% 47%}
+[data-chest][data-view="open"].is-tension .ch-lid{animation:ch-crack .8s var(--ease-in-out-soft) both}
+@keyframes ch-crack{0%{transform:translate(0,0) rotate(0)}100%{transform:translate(-.6%,-4.5%) rotate(-3deg)}}
+[data-chest][data-view="open"].is-burst .ch-lid{transform:translate(-19%,-7%) rotate(-64deg);opacity:.94;animation:ch-lidfly 1.05s var(--ease-out-expo) both}
+@keyframes ch-lidfly{
+  0%{transform:translate(-.6%,-4.5%) rotate(-3deg);opacity:1}
+  26%{transform:translate(-12%,-52%) rotate(-76deg);opacity:1}
+  58%{transform:translate(-19%,-2%) rotate(-50deg)}
+  80%{transform:translate(-19%,-10%) rotate(-69deg)}
+  100%{transform:translate(-19%,-7%) rotate(-64deg);opacity:.94}
+}
+.ch-in{opacity:0}
+[data-chest][data-view="open"].is-burst .ch-in{opacity:1}
+.ch-leak{position:absolute;left:9%;right:9%;top:46%;height:4px;border-radius:4px;z-index:4;opacity:0;pointer-events:none;
+  background:linear-gradient(90deg,transparent,#fff1b0 22%,#fff 50%,#fff1b0 78%,transparent);
+  transition:opacity .7s var(--ease-in-soft)}
+.ch-seamglow{position:absolute;left:-8%;right:-8%;top:18%;height:56%;z-index:3;opacity:0;pointer-events:none;
+  background:radial-gradient(ellipse at 50% 55%,rgb(255 238 160 / 80%),rgb(255 211 92 / 26%) 46%,transparent 72%);
+  transition:opacity .7s var(--ease-in-soft)}
+.mt-card.ch[data-phase="idle"] .ch-leak{animation:ch-leak-idle 2.8s ease-in-out infinite}
+.mt-card.ch[data-phase="idle"] .ch-seamglow{opacity:.55}
+@keyframes ch-leak-idle{0%,100%{opacity:.5}50%{opacity:1}}
+[data-chest][data-view="open"].is-tension .ch-leak{opacity:1}[data-chest][data-view="open"].is-tension .ch-seamglow{opacity:.95}
+[data-chest][data-view="open"].is-burst .ch-leak,[data-chest][data-view="open"].is-burst .ch-seamglow{opacity:0;transition-duration:.18s}
+
+/* ── Sandık sonuç/reveal/buton katmanları ───────────────────────────── */
+.ch-prize{position:absolute;left:50%;top:calc(var(--sh)*.15);width:76px;height:76px;margin-left:-38px;z-index:3;opacity:0;perspective:420px;pointer-events:none}
+.mt-card.ch[data-phase="reveal"] .ch-prize{opacity:1}
+.mt-card.ch[data-phase="done"] .ch-prize{opacity:1}
+.ch-prize svg{width:100%;height:100%;display:block}
+.ch-coin3d{width:100%;height:100%}
+.mt-card.ch[data-phase="reveal"] .ch-coin3d{animation:ch-coinspin 1.1s var(--ease-out-expo) both}
+@keyframes ch-coinspin{0%{transform:rotateY(-720deg)}100%{transform:rotateY(0)}}
+.ch-tile{position:relative;width:100%;height:100%;border-radius:22px;border:2px solid var(--rc,#ffd35c);background:radial-gradient(circle at 50% 32%,rgb(var(--rc-rgb,255 211 92) / 38%),#0d1220 72%)}
+.ch-tile svg{position:absolute;inset:8px;width:calc(100% - 16px);height:calc(100% - 16px)}
+[data-chest][data-kind="coins"] .ch-tile,[data-chest][data-kind="cosmetic"] .ch-coin3d{display:none}
+/* Metin alanı: üç görünüm aynı hücrede (kayıpsız geçiş). */
+.ch-txt{position:relative;z-index:3;display:grid;min-width:0;align-content:start}
+.ch-txt>*{grid-area:1/1}
+.ch-hint,.ch-wait{align-self:start;transition:opacity .3s ease}
+.ch-sub{margin:0 0 8px;font-size:13px;color:var(--mut);line-height:1.45}
+.ch-sub b{color:#fff}
+.ch-hint{opacity:1}.ch-wait{opacity:0;visibility:hidden}
+[data-chest][data-view="wait"] .ch-hint{opacity:0;visibility:hidden}
+[data-chest][data-view="wait"] .ch-wait{opacity:1;visibility:visible}
+[data-chest][data-view="open"] .ch-hint{opacity:0}
+.ch-res{opacity:0;visibility:hidden;display:grid;justify-items:center;align-content:start;padding-top:2px}
+[data-chest][data-view="open"] .ch-res{opacity:1;visibility:visible}
+.ch-pill{display:inline-flex;align-items:center;padding:4px 12px;border-radius:99px;border:1px solid rgb(var(--rc-rgb,255 211 92) / 50%);background:rgb(var(--rc-rgb,255 211 92) / 12%);
+  color:var(--rc2,#ffe58a);font:700 11px 'Chakra Petch',sans-serif;letter-spacing:.2em}
+[data-chest][data-view="open"].is-reveal .ch-pill{animation:ch-pill-in .5s var(--ease-out-expo) .1s both}
+@keyframes ch-pill-in{from{opacity:0;transform:translateY(8px) scale(.9)}}
+.ch-amt{margin:8px 0 0;max-width:100%;font:700 46px/1.15 'Chakra Petch',sans-serif;color:var(--rc2,#ffe58a);font-variant-numeric:tabular-nums;letter-spacing:.01em;transform-origin:50% 60%;overflow-wrap:anywhere;text-wrap:balance}
+.ch-amt .unit{font-size:.62em;letter-spacing:.06em}
+html:not([data-q="low"]) .ch-amt{background:linear-gradient(105deg,var(--rc2,#ffe58a) 38%,#fff 50%,var(--rc2,#ffe58a) 62%) 0 0/100% 100% no-repeat;-webkit-background-clip:text;background-clip:text;color:transparent}
+[data-chest][data-view="open"].is-reveal .ch-amt{animation:ch-amt-in .62s var(--ease-out-back) .08s both}
+.ch-amt.pop{animation:ch-amt-pop .34s var(--ease-out-back) both}
+@keyframes ch-amt-in{0%{opacity:0;transform:scale(.5)}55%{opacity:1;transform:scale(1.16)}100%{opacity:1;transform:scale(1)}}
+@keyframes ch-amt-pop{0%{transform:scale(1)}42%{transform:scale(1.13)}100%{transform:scale(1)}}
+.ch-meta{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;min-height:30px;margin-top:10px}
+.ch-seri{position:relative;display:inline-flex;align-items:center;gap:6px;padding:5px 12px 5px 12px;border-radius:99px;overflow:hidden;opacity:0;
+  font:700 12px 'Chakra Petch',sans-serif;letter-spacing:.14em;color:#2b1d00;background:linear-gradient(180deg,#ffe58a,#ffc233)}
+.ch-seri::after{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 35%,rgb(255 255 255 / 80%) 50%,transparent 65%);transform:translateX(-130%)}
+[data-chest][data-view="open"].is-badge .ch-seri{opacity:1;animation:ch-seri-in .7s var(--ease-out-back) both}
+[data-chest][data-view="open"].is-badge .ch-seri::after{animation:ch-sweep .9s var(--ease-in-out-soft) .5s both}
+html:not([data-q="low"]) [data-chest][data-view="open"].is-badge .ch-seri{box-shadow:0 0 22px rgb(255 211 92 / 45%)}
+@keyframes ch-seri-in{0%{opacity:0;transform:scale(.4) rotate(-9deg)}45%{opacity:1;transform:scale(1.17) rotate(5deg)}68%{transform:scale(.97) rotate(-3deg)}85%{transform:scale(1.03) rotate(1.5deg)}100%{opacity:1;transform:scale(1) rotate(0)}}
+@keyframes ch-sweep{to{transform:translateX(130%)}}
+.ch-eq{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:var(--gr);opacity:0}
+[data-chest][data-view="open"].is-badge .ch-eq{opacity:1;animation:ch-fade-up .45s var(--ease-out-expo) both}
+@keyframes ch-fade-up{from{opacity:0;transform:translateY(6px)}}
+.ch-subs{margin-top:10px;opacity:0}
+.ch-subs .ch-sub{margin:0 0 3px}
+[data-chest][data-view="open"].is-done .ch-subs{opacity:1;transition:opacity .5s var(--ease-out-expo)}
+/* Butonlar */
+.ch-act{position:relative;z-index:3;display:grid;min-height:46px;margin-top:14px}
+.ch-act>*{grid-area:1/1}
+.ch-open{justify-self:center;min-height:46px;padding:0 44px;border:0;border-radius:14px;font:700 15px 'Chakra Petch',sans-serif;letter-spacing:.14em;color:#2b1d00;
+  background:linear-gradient(180deg,#ffe58a,#ffc233);box-shadow:0 0 26px rgb(255 211 92 / 35%);transition:transform .15s,opacity .25s,visibility .25s}
+.ch-open:hover{filter:brightness(1.06)}
+.ch-open:active{transform:scale(.96)}
+[data-chest][data-view="open"] .ch-open,[data-chest][data-view="wait"] .ch-open{opacity:0;visibility:hidden;transform:scale(.9);pointer-events:none}
+.ch-row{display:flex;gap:8px;justify-content:center;visibility:hidden}
+.ch-row>*{min-height:46px;opacity:0;transform:translateY(12px);border-radius:14px;font:700 13px 'Chakra Petch',sans-serif;letter-spacing:.1em}
+.ch-row .k{padding:0 36px;border:0;color:#2b1d00;background:linear-gradient(180deg,#ffe58a,#ffc233);font-size:15px;letter-spacing:.14em}
+.ch-row .m{padding:0 26px;border:1px solid var(--ln);background:transparent;color:var(--mut)}
+.ch-row .m:hover{color:#fff;border-color:var(--cy)}
+[data-chest][data-view="wait"] .ch-row,[data-chest][data-view="open"].is-done .ch-row{visibility:visible}
+[data-chest][data-view="wait"] .ch-row>*,[data-chest][data-view="open"].is-done .ch-row>*{opacity:1;transform:none;transition:opacity .5s var(--ease-out-expo),transform .5s var(--ease-out-expo)}
+[data-chest][data-view="open"].is-done .ch-row>*:nth-child(1){transition-delay:.08s}
+[data-chest][data-view="open"].is-done .ch-row>*:nth-child(2){transition-delay:.16s}
+[data-chest][data-view="wait"] .ch-row>*{transition-delay:0s}
+/* Epik sarsıntı (kart; arena motoruna dokunulmaz). */
+.mt-card.ch.ch-shake{animation:ch-mshake .2s linear both}
+@keyframes ch-mshake{0%{transform:translate(0,0)}15%{transform:translate(-3px,2px)}30%{transform:translate(3px,-2px)}45%{transform:translate(-2px,-2px)}60%{transform:translate(2px,2px)}80%{transform:translate(-1px,1px)}100%{transform:translate(0,0)}}
+.mt-card.ch.ch-anim .ch-box,.mt-card.ch.ch-anim .ch-prize{will-change:transform,opacity}
+
+/* Sandık içerik tablosu: oran çubukları + açılır ürün listesi. */
+.ch-odds{margin-top:14px;padding-top:12px;border-top:1px solid var(--ln);text-align:left}
+.ch-odds-t{margin:0 0 8px;display:flex;align-items:center;gap:8px;font:700 11px 'Chakra Petch',sans-serif;letter-spacing:.22em;color:var(--mut)}
+.ch-odds-t .ic{width:15px;height:15px;color:var(--gold)}
+.ch-odd{display:grid;grid-template-columns:1fr 90px 40px;gap:10px;align-items:center;margin:6px 0;font-size:13px;color:#dfe6f7}
+.ch-odd small{display:block;font-size:11px;color:var(--faint)}
+.ch-odd b{text-align:right;font-variant-numeric:tabular-nums;color:#fff}
+.ch-odd-top b{color:var(--gold)}
+.ch-pool li u{text-decoration:none;font:700 10px 'Chakra Petch',sans-serif;color:var(--faint);font-variant-numeric:tabular-nums}
+.ch-pool li.rar-epik u{color:#c9a6ff}
+.ch-bar{height:7px;border-radius:9px;background:rgb(255 255 255 / 9%);overflow:hidden}
+.ch-bar i{display:block;height:100%;border-radius:9px;background:linear-gradient(90deg,var(--pu),var(--cy),var(--li));animation:ch-fill .7s var(--ease-out-expo) .2s both}
+@keyframes ch-fill{from{width:0}}
+.ch-odds-n{margin:8px 0 0;font-size:12px;color:var(--faint)}
+.ch-pool{margin-top:8px}
+.ch-pool summary{cursor:pointer;font-size:12.5px;color:var(--cy);list-style:none;display:flex;align-items:center;gap:6px}
+.ch-pool summary::-webkit-details-marker{display:none}
+.ch-pool summary::after{content:'▾';font-size:10px;transition:transform .2s}
+.ch-pool[open] summary::after{transform:rotate(180deg)}
+.ch-pool summary:hover{text-decoration:underline}
+.ch-pool ul{margin:10px 0 0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:6px}
+.ch-pool li{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:99px;font-size:12px;
+  border:1px solid var(--ln);background:rgb(255 255 255 / 4%);color:#dfe6f7;transition:border-color .15s,transform .15s}
+.ch-pool li:hover{border-color:var(--cy);transform:translateY(-1px)}
+.ch-pool li em{font:700 9px 'Chakra Petch',sans-serif;font-style:normal;letter-spacing:.1em}
+.ch-pool li.rar-nadir em{color:var(--gr)}
+.ch-pool li.rar-epik em{color:#c9a6ff}
+.pf-shop:hover{transform:translateY(-1px)}.pf-shop:active{transform:scale(.96)}
+@media (max-width:640px){.mt-side{display:none}.pf-id span{display:none}.mt-pf{left:auto;right:10px;transform:none;gap:8px}}
+@media (prefers-reduced-motion:reduce){.bd,.bd-x,.mt-gain,.mt-lv.lvup,.mt-lb .me span,.mk-art .nm span{animation:none!important}.mt-ring{transition:none}}
+/* ═══ SANDIK v2 — görsel katman ═══════════════════════════════════════════
+   Kural 1: efekt kapalıyken (html.fx-calm) animasyon yok ama sahne EKSİKSİZ:
+   ışık/hale/kıvılcım değerleri animasyondan bağımsız taban olarak tanımlıdır.
+   Kural 2: düşük kalitede blur/ağır gölge yok; yalnızca gradyan + transform/opacity. */
+[data-chest]{padding-block:max(16px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-bottom))}
+.ch-hd h2{font-size:clamp(17px,5.6vw,22px)}
+
+/* Rarity rengi kartın kendi data-rar'ından gelir: sakin modda chestfx modal data-tier'ı yazmaz,
+   eskiden nadir/epik ödül altın renkte görünürdü. */
+.mt-card.ch[data-rar="nadir"]{--rc-rgb:78 224 99;--rc2:#c4ffcc}
+.mt-card.ch[data-rar="epik"]{--rc-rgb:180 107 255;--rc2:#e6d0ff}
+
+/* Sahne süsleri: zemin ışığı (her görünüm) + sızan ışık / kıvılcım / parlama (yalnız kapalı sandık) */
+.ch-motes,.ch-sheen{display:none;pointer-events:none}
+.ch-floor{display:block;position:absolute;z-index:1;left:50%;bottom:-4px;width:calc(var(--cw)*1.7);height:30px;margin-left:calc(var(--cw)*-.85);border-radius:50%;
+  background:radial-gradient(ellipse at 50% 50%,rgb(var(--rc-rgb) / 42%),rgb(var(--rc-rgb) / 12%) 48%,transparent 72%)}
+[data-chest][data-view="idle"] .ch-motes,[data-chest][data-view="idle"] .ch-sheen{display:block}
+
+/* Kapalı/hazır: hale + yükselen ışık huzmesi + kapak aralığından sızan ışık */
+[data-chest][data-view="idle"] .ch-halo{opacity:.46;transform:scale(.86)}
+[data-chest][data-view="idle"] .ch-beam{opacity:.48;transform:none;width:120px;margin-left:-60px;height:140px;animation:ch-beam-idle 3.2s ease-in-out infinite;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 32%,#000 68%,transparent);mask-image:linear-gradient(90deg,transparent,#000 32%,#000 68%,transparent)}
+@keyframes ch-beam-idle{0%,100%{opacity:.32}50%{opacity:.62}}
+[data-chest][data-view="idle"] .ch-leak{opacity:.78}
+.ch-leak::after{content:"";position:absolute;left:8%;right:8%;bottom:100%;height:34px;background:linear-gradient(to top,rgb(255 240 180 / 55%),transparent);clip-path:polygon(0 100%,100% 100%,86% 0,14% 0)}
+html:not([data-q="low"]) .ch-leak{box-shadow:0 0 12px 2px rgb(255 226 140 / 65%)}
+.ch-motes{position:absolute;left:50%;bottom:calc(var(--sh) - var(--seam));width:0;height:0;z-index:3}
+.ch-motes i{position:absolute;left:0;top:0;width:var(--z,7px);height:var(--z,7px);margin:calc(var(--z,7px) / -2) 0 0 calc(var(--z,7px) / -2);
+  background:#fff1b0;clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%);
+  opacity:.8;transform:translate(var(--x),calc(var(--y) * .55));animation:ch-mote 3.6s ease-out var(--d) infinite}
+.ch-motes i:nth-child(1){--x0:-6px;--x:-46px;--y:-78px;--d:-.2s;--z:8px}
+.ch-motes i:nth-child(2){--x0:-2px;--x:30px;--y:-92px;--d:-1s;--z:6px}
+.ch-motes i:nth-child(3){--x0:4px;--x:-18px;--y:-110px;--d:-1.8s;--z:5px}
+.ch-motes i:nth-child(4){--x0:8px;--x:52px;--y:-64px;--d:-2.4s;--z:7px}
+.ch-motes i:nth-child(5){--x0:-10px;--x:-62px;--y:-52px;--d:-3s;--z:5px}
+.ch-motes i:nth-child(6){--x0:2px;--x:14px;--y:-128px;--d:-.6s;--z:6px}
+@keyframes ch-mote{0%{opacity:0;transform:translate(var(--x0),0) scale(.4)}18%{opacity:1}100%{opacity:0;transform:translate(var(--x),var(--y)) scale(1)}}
+.ch-sheen{position:absolute;left:9%;right:9%;top:30%;bottom:6%;z-index:3;border-radius:10px;overflow:hidden}
+.ch-sheen::before{content:"";position:absolute;top:-10%;bottom:-10%;left:0;width:34%;transform:translateX(-160%) skewX(-18deg);
+  background:linear-gradient(105deg,transparent,rgb(255 255 255 / 34%) 50%,transparent);animation:ch-sheen 4.4s ease-in-out 1s infinite}
+@keyframes ch-sheen{0%,55%{transform:translateX(-160%) skewX(-18deg)}88%,100%{transform:translateX(420%) skewX(-18deg)}}
+
+/* Bekleme: soğuk, "uyuyan" ışık — hak yok, sandık sönük ve sakin */
+[data-chest][data-view="wait"]{--rc-rgb:150 170 215}
+[data-chest][data-view="wait"] .mt-card.ch[data-phase="idle"] .ch-box{animation:none;opacity:.8}
+html:not([data-q="low"]) [data-chest].is-wait .ch-box{filter:saturate(.55) brightness(.92)}
+[data-chest][data-view="wait"] .mt-card.ch[data-phase="idle"] .ch-halo{animation:none;opacity:.3;transform:scale(.72)}
+[data-chest][data-view="wait"] .mt-card.ch[data-phase="idle"] :is(.ch-leak,.ch-seamglow){animation:none;opacity:0}
+
+/* Sahne yüksekliği: kapalı/bekleme görünümünde animasyon payı gerekmez (ödül sahnesi aynen kalır) */
+@media (min-height:701px){[data-chest][data-view="idle"] .ch-stage{--sh:240px}[data-chest][data-view="wait"] .ch-stage{--sh:190px}}
+@media (max-height:700px){[data-chest][data-view="wait"] .ch-stage{--sh:150px}}
+@media (max-height:640px){[data-chest][data-view="wait"] .ch-stage{--sh:128px}}
+
+/* İpucu / bekleme bilgisi */
+.ch-sub{display:flex;align-items:center;justify-content:center;gap:8px;text-align:center}
+.ch-sub .ic{width:16px;height:16px;flex:none;color:var(--gold)}
+.ch-sub>span{min-width:0;text-wrap:balance}
+.ch-hint{justify-self:center;max-width:100%;margin:0;padding:9px 14px;border:1px solid rgb(255 211 92 / 22%);border-radius:16px;background:rgb(255 211 92 / 7%);color:#e8ecfa}
+.ch-wait{display:grid;gap:8px;justify-items:center}
+.ch-wait .ch-sub{max-width:100%;margin:0;padding:9px 14px;border:1px solid var(--ln);border-radius:14px;background:rgb(255 255 255 / 4%)}
+.ch-wait .ch-sub .ic{color:var(--cy)}
+
+/* AÇ: dolgun, derinlikli düğme + periyodik parlama */
+.ch-open{position:relative;overflow:hidden;min-height:50px;padding:0 54px;border-radius:15px;font-size:16px;letter-spacing:.2em;
+  background:linear-gradient(180deg,#fff0b0,#ffd04d 46%,#f5aa1c);
+  box-shadow:inset 0 1px 0 rgb(255 255 255 / 70%),inset 0 -3px 0 rgb(150 90 0 / 35%),0 0 26px rgb(255 211 92 / 35%)}
+.ch-open::after{content:"";position:absolute;inset:0;pointer-events:none;transform:translateX(-130%);
+  background:linear-gradient(105deg,transparent 38%,rgb(255 255 255 / 70%) 50%,transparent 62%);animation:ch-open-sweep 3.4s ease-in-out 1.2s infinite}
+@keyframes ch-open-sweep{0%,55%{transform:translateX(-130%)}100%{transform:translateX(130%)}}
+
+/* Ödül hiyerarşisi: rozet > ödül adı > ek bilgi. Hiçbir metin kesilmez (n1..n4 kademeli + satır kırma). */
+.ch-res{min-width:0;max-width:100%}
+.ch-pill{gap:7px;padding:6px 14px 6px 12px;font-size:12px;border-color:rgb(var(--rc-rgb,255 211 92) / 65%);
+  background:linear-gradient(180deg,rgb(var(--rc-rgb,255 211 92) / 24%),rgb(var(--rc-rgb,255 211 92) / 8%))}
+.ch-pill .ch-gem{width:12px;height:12px;flex:none}
+.ch-amt{margin:10px 0 0;padding:.1em 0;font-size:34px;line-height:1.14}
+.ch-amt.n1{font-size:36px}.ch-amt.n2{font-size:30px}.ch-amt.n3{font-size:25px}.ch-amt.n4{font-size:21px}
+.ch-amt.is-num{font-size:46px;line-height:1.1}
+.ch-amt .unit{margin-left:.12em}
+/* Uzun isimler (n3/n4) belirirken az büyür: tepe noktada bile kart kenarına yaklaşmaz */
+@keyframes ch-amt-in-s{0%{opacity:0;transform:scale(.6)}55%{opacity:1;transform:scale(1.05)}100%{opacity:1;transform:scale(1)}}
+[data-chest][data-view="open"].is-reveal .ch-amt:is(.n3,.n4){animation-name:ch-amt-in-s}
+.ch-meta{margin-top:8px}
+.ch-eq{padding:4px 11px;border:1px solid rgb(95 224 140 / 35%);border-radius:99px;background:rgb(95 224 140 / 10%)}
+.ch-eq::before{content:"✓";font-weight:700}
+.ch-subs{justify-self:stretch;display:grid;gap:7px;margin-top:12px;padding:10px 12px;border:1px solid var(--ln);border-radius:14px;background:rgb(255 255 255 / 3%)}
+.ch-subs .ch-sub{justify-content:flex-start;margin:0;font-size:12.5px;text-align:left}
+.ch-subs .ch-sub .ic{color:var(--rc,#ffd35c)}
+.ch-tile{box-shadow:inset 0 0 18px rgb(var(--rc-rgb,255 211 92) / 30%)}
+html:not([data-q="low"]) .ch-tile{box-shadow:inset 0 0 18px rgb(var(--rc-rgb,255 211 92) / 30%),0 0 22px rgb(var(--rc-rgb,255 211 92) / 40%)}
+
+/* Alçak ekran: ödül karosu küçülür, sandığa binmez */
+@media (max-height:640px){.ch-prize{width:60px;height:60px;margin-left:-30px;top:calc(var(--sh)*.04)}.ch-tile{border-radius:18px}}
+
+/* Düğme sırası: dar ekranda sarar, metin kesilmez */
+.ch-row{width:100%;flex-wrap:wrap;gap:10px}
+.ch-row>*{flex:1 1 100px;min-width:0;line-height:1.2}
+.ch-row .k{flex:1.2 1 120px;padding:0 16px}
+.ch-row .k:only-child{flex:0 1 180px}
+.ch-row .m{padding:6px 16px;letter-spacing:.06em}
+.ch-row .m[data-lucky]{flex:1 1 100%}
+
+/* İçerik tablosu: dağılım şeridi + nadirlik renkli satırlar + ürün çipleri (oran metinleri aynen) */
+.ch-odds{margin-top:14px;padding:12px;border:1px solid var(--ln);border-radius:16px;background:linear-gradient(180deg,rgb(255 255 255 / 4%),rgb(255 255 255 / 1.5%))}
+.ch-odds-t{margin-bottom:10px}
+.ch-strip{display:flex;gap:2px;height:8px;margin:0 0 6px;border-radius:99px;overflow:hidden}
+.ch-strip i{display:block;min-width:4px;height:100%}
+.s-coin{background:linear-gradient(90deg,#ffe58a,#ffc233)}.s-big{background:linear-gradient(90deg,#ffb02e,#ff8a1f)}
+.s-nadir{background:linear-gradient(90deg,#8af0a0,#4ee063)}.s-epik{background:linear-gradient(90deg,#c995ff,#b46bff)}
+.ch-odd{--bc:var(--cy);grid-template-columns:minmax(0,1fr) 84px 48px;gap:10px;margin:0;padding:6px 0;border-top:1px solid rgb(255 255 255 / 5%)}
+.ch-odd-top{border-top:0}
+.t-coin{--bc:#ffd35c}.t-big{--bc:#ff9a2e}.t-nadir{--bc:#4ee063}.t-epik{--bc:#b46bff}
+.ch-odd>span{min-width:0;font-weight:600;line-height:1.25;overflow-wrap:anywhere}
+.ch-odd>span::before{content:"";display:inline-block;width:8px;height:8px;margin-right:8px;border-radius:3px;background:var(--bc);vertical-align:.04em}
+#meta .ch-odd small{display:block;margin-top:2px;padding-left:16px;font-size:11px;font-weight:500;letter-spacing:.02em;color:var(--faint)}
+.ch-odd b{font:700 13px 'Chakra Petch',sans-serif}
+.t-nadir b{color:#b6f5c4}.t-epik b{color:#dcc2ff}.ch-odd-top b{color:var(--gold)}
+.ch-bar{height:8px}
+.ch-bar i{min-width:5px;background:linear-gradient(90deg,color-mix(in srgb,var(--bc) 45%,#0a0e19),var(--bc))}
+.ch-odds-n{margin-top:10px;line-height:1.45}
+.ch-pool{margin-top:12px}
+.ch-pool summary{justify-content:space-between;min-height:44px;padding:0 14px;border:1px solid rgb(43 231 255 / 28%);border-radius:12px;background:rgb(43 231 255 / 6%);font-weight:600}
+.ch-pool summary:hover{text-decoration:none;background:rgb(43 231 255 / 11%)}
+.ch-pool li{min-width:0;gap:7px;padding:6px 10px 6px 8px;font-weight:600;overflow-wrap:anywhere}
+.ch-pool li::before{content:"";flex:none;width:8px;height:8px;border-radius:2px;transform:rotate(45deg)}
+.ch-pool li.rar-nadir{border-color:rgb(78 224 99 / 30%);background:rgb(78 224 99 / 7%)}.ch-pool li.rar-nadir::before{background:#4ee063}
+.ch-pool li.rar-epik{border-color:rgb(180 107 255 / 42%);background:rgb(180 107 255 / 11%)}.ch-pool li.rar-epik::before{background:#b46bff}
+.ch-pool li u{padding:1px 6px;border-radius:99px;background:rgb(255 255 255 / 8%)}
+@media (max-width:380px){.ch-odds{padding:10px}.ch-odd{grid-template-columns:minmax(0,1fr) 64px 46px;gap:8px}}
+
+/* Sakin mod: yeni süs katmanları da durur (taban değerleri sahneyi eksiksiz gösterir) */
+html.fx-calm .ch-motes i,html.fx-calm .ch-sheen::before,html.fx-calm .ch-open::after,html.fx-calm .ch-seri::after,html.fx-calm .ch-leak::after{animation:none!important}
+
+/* ═══ Giriş (marketin kardeşi: aynı kart, aynı neon kenar, aynı başlık dili) ═ */
+.mt-card.au{width:min(440px,100%);padding:22px}
+.mt-card.au>header{margin-bottom:12px}
+.mt-card.au .mt-note{margin:2px 0 0;min-height:0}
+.au-prev{display:flex;align-items:center;gap:12px;margin-bottom:14px;padding:12px 14px;border-radius:14px;background:rgb(255 255 255 / 4%);border:1px solid var(--ln)}
+.au-dot{flex:none;width:34px;height:34px;border-radius:50%;background:var(--c,#2be7ff);box-shadow:0 0 14px var(--c,#2be7ff)}
+.au-prev div{display:grid;gap:1px;min-width:0}
+.au-prev b{font:700 15px 'Chakra Petch',sans-serif}
+.au-prev small{font-size:12px;color:var(--mut);letter-spacing:.02em}
+.au-google{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:52px;border:0;border-radius:13px;
+  font:700 15px 'Chakra Petch',sans-serif;letter-spacing:.04em;color:#04060c;background:linear-gradient(90deg,#f2f5ff,#bfefff);box-shadow:0 0 28px rgb(43 231 255 / 32%);transition:transform .12s,filter .15s}
+.au-google svg{width:20px;height:20px;flex:none}
+.au-google:hover:not(:disabled){filter:brightness(1.06);transform:translateY(-1px)}
+.au-google:active:not(:disabled){transform:scale(.97)}
+.au-google:disabled{cursor:default;opacity:.55;box-shadow:none}
+.au-spin{width:18px;height:18px;flex:none;border-radius:50%;border:2.5px solid rgb(4 6 12 / 25%);border-top-color:#04060c;animation:au-spin .7s linear infinite}
+@keyframes au-spin{to{transform:rotate(360deg)}}
+.au-guest-btn{width:100%;min-height:48px;margin-top:8px;border-radius:13px;border:1px solid var(--ln);background:transparent;color:var(--mut);font:600 14px 'Chakra Petch',sans-serif;transition:border-color .15s,color .15s}
+.au-guest-btn:hover{color:#fff;border-color:var(--cy)}
+.au-err{margin:10px 0 0;padding:9px 12px;border-radius:12px;font-size:13px;color:#ffb3b8;background:rgb(255 70 80 / 10%);border:1px solid rgb(255 70 80 / 35%)}
+.au-off{margin:10px 0 0;padding:9px 12px;border-radius:12px;font-size:13px;color:var(--mut);background:rgb(255 255 255 / 4%);border:1px solid var(--ln)}
+.au-user{display:flex;align-items:center;gap:12px;margin-bottom:12px;padding:12px 14px;border-radius:14px;background:rgb(255 255 255 / 4%);border:1px solid var(--ln)}
+.au-user img,.au-user .pf-init{width:40px;height:40px;border-radius:50%;flex:none}
+.au-user img{object-fit:cover}
+.au-user div{display:grid;gap:1px;min-width:0}
+.au-user b{font:700 15px 'Chakra Petch',sans-serif;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.au-user small{font-size:12px;color:var(--mut);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.au-user .pf-init{font-size:17px}
+.au-perks{margin:16px 0 0;padding:0;list-style:none;display:grid;gap:8px}
+.au-perks li{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--mut)}
+.au-perks .ic{font-size:16px;color:var(--gr);flex:none}
+.au-fine{margin:14px 0 0;font-size:11.5px;color:var(--faint);text-align:center}
+.au-fine a{color:var(--cy)}
+/* Üst bar bulut göstergesi: nokta + iki kelime, sade ve sessiz */
+.au-sync{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 6px;border:0;background:none;color:var(--faint);font:600 11px 'Exo 2',system-ui,sans-serif;letter-spacing:.02em;white-space:nowrap}
+.au-sync i{width:7px;height:7px;flex:none;border-radius:50%;background:var(--gr)}
+.au-sync[data-st="saving"] i{background:var(--cy)}
+.au-sync[data-st="offline"] i{background:var(--gold)}
+.au-sync[data-st="error"] i,.au-sync[data-st="conflict"] i{background:var(--bad)}
+.au-sync[data-st="conflict"]{color:var(--mut)}
+@media (max-width:480px){.au-sync span{display:none}.au-sync{padding:0 2px}}
+/* Üst bar: giriş hapı + misafir notu + hesap menüsü */
+.pf-auth{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 18px;border:1px solid var(--ln);border-radius:99px;background:rgb(255 255 255 / 5%);color:#f2f5ff;font:700 12.5px 'Chakra Petch',sans-serif;letter-spacing:.1em;transition:border-color .15s,color .15s;white-space:nowrap}
+.pf-auth:hover{color:#fff;border-color:var(--cy)}
+.pf-auth .au-ic{display:none;line-height:0}
+.pf-auth .au-ic .ic{width:20px;height:20px}
+.au-guest{font-size:11px;color:var(--faint);letter-spacing:.02em;white-space:nowrap}
+.pf-user{position:relative;display:flex;align-items:center;gap:8px;min-height:44px;padding:4px 14px 4px 4px;border:1px solid var(--ln);border-radius:99px;background:rgb(255 255 255 / 5%);color:#f2f5ff;transition:border-color .15s}
+.pf-user:hover{border-color:var(--cy)}
+.pf-user img{width:36px;height:36px;border-radius:50%;object-fit:cover;flex:none}
+.pf-init{display:grid;place-items:center;width:36px;height:36px;flex:none;border-radius:50%;font:700 15px 'Chakra Petch',sans-serif;color:#04060c;background:var(--brand)}
+.pf-user span{max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:700 13px 'Chakra Petch',sans-serif}
+.au-menu{position:absolute;top:calc(100% + 8px);right:0;z-index:5;display:grid;gap:8px;min-width:220px;max-width:calc(100vw - 20px);padding:12px;border-radius:14px;border:1px solid transparent;
+  background:linear-gradient(#0d1220,#090d18) padding-box,linear-gradient(150deg,rgb(157 92 255 / 55%),rgb(255 255 255 / 8%) 45%,rgb(43 231 255 / 50%)) border-box;box-shadow:0 18px 50px rgb(0 0 0 / 55%)}
+.au-menu p{margin:0;font-size:12px;color:var(--mut);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.au-menu button{min-height:44px;border-radius:10px;border:1px solid var(--ln);background:transparent;color:var(--mut);font:600 13px 'Chakra Petch',sans-serif}
+.au-menu button:hover{color:#fff;border-color:var(--cy)}
+/* Hoş geldin bildirimi (mt-pops ile aynı dil) */
+.au-toast{position:absolute;left:50%;bottom:26px;transform:translateX(-50%);z-index:9;padding:9px 22px;border-radius:99px;white-space:nowrap;
+  font:700 14px 'Chakra Petch',sans-serif;color:#04060c;background:var(--brand);box-shadow:0 0 22px rgb(43 231 255 / 40%);pointer-events:none}
+.au-toast.show{animation:mt-pop-in .5s cubic-bezier(.3,1.6,.5,1) both}
+/* Ölüm ekranı hatırlatma satırı */
+.dv-auth{grid-column:1/-1;display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:12px;border:1px solid rgb(43 231 255 / 28%);background:rgb(43 231 255 / 7%);font-size:12.5px;color:var(--mut)}
+.dv-auth span{flex:1;min-width:0}
+.dv-auth button[data-act]{min-height:44px;padding:0 18px;flex:none;border:0;border-radius:10px;font:700 12px 'Chakra Petch',sans-serif;letter-spacing:.08em;color:#04060c;background:linear-gradient(90deg,#f2f5ff,#bfefff)}
+.dv-auth button[data-auth-x]{flex:none;width:44px;height:44px;border:0;border-radius:10px;background:transparent;color:var(--mut);font-size:14px}
+.dv-auth button[data-auth-x]:hover{color:#fff}
+@media (max-width:640px){.au-guest{display:none}}
+/* Dar bar: önce boşluklar sıkılır (480), sonra hap ikona iner (380).
+   15 ögenin sığmadığı genişlikte metin kesilmesin diye kademeli. */
+@media (max-width:480px){
+  .mt-pf{gap:8px;padding:5px 6px}
+  .pf-shop{padding:0 14px}
+}
+@media (max-width:380px){
+  .mt-pf{gap:6px}
+  .pf-shop{padding:0 10px;font-size:12px}
+  .pf-auth{min-height:40px;width:44px;padding:0}
+  .pf-auth .au-ic{display:block}
+  .pf-auth .au-tx{display:none}
+  .pf-user{padding:4px}
+  .pf-user span{display:none}
+}
+@media (max-width:560px){
+  [data-auth]{place-items:end center;padding:0 0 max(12px,env(safe-area-inset-bottom))}
+  [data-auth] .mt-card.au{width:100%;border-radius:22px 22px 0 0;max-height:92vh;overflow:auto}
+}
+html.fx-calm .au-spin{animation:none!important}
+@media (prefers-reduced-motion:reduce){.au-spin{animation:none!important}}
+
+/* Düşük kalite: blur/ağır gölge yok; hale + huzme statik gradyan olarak kalır */
+html[data-q="low"] .mt-card.ch{box-shadow:none}
+html[data-q="low"] .ch-edge{box-shadow:inset 0 0 0 1px rgb(var(--rc-rgb,255 211 92) / 55%)}
+html[data-q="low"] .ch-leak,html[data-q="low"] .ch-tile{box-shadow:none}
+html[data-q="low"] .ch-open{box-shadow:inset 0 1px 0 rgb(255 255 255 / 70%),inset 0 -3px 0 rgb(150 90 0 / 35%)}
+html[data-q="low"] [data-chest]:is([data-view="idle"],[data-view="wait"]) .ch-halo{display:block;animation:none}
+html[data-q="low"] [data-chest][data-view="idle"] .ch-beam{display:block;animation:none}
+html[data-q="low"] .ch-motes i:nth-child(n+4){display:none}
+
+/* Düşük kalite: pahalı glow/blur katmanları kapanır, yalnızca transform+opacity. */
+html[data-q="low"] .ch-box,html[data-q="low"] .ch-box.open{filter:none}
+html[data-q="low"] .ch-amt{text-shadow:none;background:none;color:var(--rc2,#ffe58a)}
+html[data-q="low"] .ch-open{box-shadow:none}
+html[data-q="low"] .ch-rays,html[data-q="low"] .ch-flash,html[data-q="low"] .ch-halo,html[data-q="low"] .ch-beam,html[data-q="low"] .ch-seamglow{display:none}
+html[data-q="low"] .ch-rw2{display:none}
+html[data-q="low"] .pf-chest.ready{animation:none}
+html[data-q="low"] .pf-chest .dot{box-shadow:none}
+
+/* Efekt anahtarı kapalıyken çerçeveler de durur (OS ayarından bağımsız). */
+html.fx-calm .mt-ring{transition:none}
+html.fx-calm .mt-ring .fx,html.fx-calm .fr-ice .fx2::after{animation:none!important}
+
+/* ═══ Market v3 ═══════════════════════════════════════════════════════ */
+@property --a{syntax:'<angle>';inherits:false;initial-value:0deg}
+@keyframes mk-spin{to{--a:360deg}}
+@keyframes mk-turn{to{transform:rotate(360deg)}}
+@keyframes mk-float{50%{transform:translateY(-7px)}}
+@keyframes mk-flash{from{box-shadow:0 0 0 2px var(--r),0 0 70px var(--r)}to{box-shadow:0 0 0 0 transparent}}
+@keyframes mk-pop{0%{transform:scale(.88)}45%{transform:scale(1.08)}100%{transform:scale(1)}}
+@keyframes mk-sheen{to{background-position:200% 0}}
+@keyframes mk-hue{to{filter:hue-rotate(360deg)}}
+@keyframes mk-pulse{50%{box-shadow:0 0 0 3px var(--c1),0 0 26px var(--c1)}}
+@keyframes mk-fly{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(-26px)}}
+
+.mt-card.mk{position:relative;width:min(1020px,100%);max-height:min(94vh,900px);display:flex;flex-direction:column;padding:0;overflow:hidden;isolation:isolate;
+  background:linear-gradient(#0c1120,#070a14) padding-box,conic-gradient(from var(--a),#9d5cff,#2be7ff,#a8ff3e,#ffb02e,#ff5cf0,#9d5cff) border-box;
+  animation:mt-rise .5s cubic-bezier(.2,0,0,1) both,mk-spin 10s linear infinite}
+.mk>*{position:relative;z-index:1}
+.mk-amb,.mk-conf{position:absolute!important;inset:0;width:100%;height:100%;pointer-events:none}.mk-amb{z-index:0!important;opacity:.9}.mk-conf{z-index:6!important}
+.mk>header{display:flex;align-items:flex-start;gap:14px;margin:0;padding:20px 22px 10px}
+.mk>header>div{flex:1}.mk>header h2{font-size:26px;letter-spacing:.2em;background:linear-gradient(90deg,#fff,#bfefff,#e7c9ff,#fff);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:mk-sheen 5s linear infinite}
+.mk .mt-note{margin:2px 0 0;min-height:0}
+.mt-coin.big{position:relative}.cfly{position:absolute;right:10px;top:100%;font:700 13px 'Chakra Petch',sans-serif;font-style:normal;color:var(--bad);animation:mk-fly 1s ease-out forwards;pointer-events:none}
+
+/* Showroom + günün fırsatı */
+.mk-top{display:grid;grid-template-columns:1.5fr 1fr;gap:12px;margin:0 22px}
+.mk-show{position:relative;height:178px;border-radius:18px;overflow:hidden;border:1px solid var(--ln);
+  background:radial-gradient(ellipse at 50% 115%,color-mix(in srgb,var(--c) 38%,transparent),transparent 62%),linear-gradient(#0a0e1c,#060812)}
+.mk-show::before{content:'';position:absolute;inset:auto 0 0 0;height:55%;opacity:.35;pointer-events:none;
+  background:repeating-linear-gradient(90deg,rgb(255 255 255 / 12%) 0 1px,transparent 1px 34px),repeating-linear-gradient(0deg,rgb(255 255 255 / 12%) 0 1px,transparent 1px 24px);
+  -webkit-mask:linear-gradient(transparent,#000);mask:linear-gradient(transparent,#000);transform:perspective(220px) rotateX(58deg);transform-origin:bottom}
+.mk-show canvas{position:absolute;inset:0;width:100%;height:100%}
+.mk-cap{position:absolute;left:12px;bottom:10px;display:grid;gap:1px;padding:8px 12px;border-radius:12px;background:rgb(6 9 18 / 72%);backdrop-filter:blur(8px);border:1px solid var(--ln)}
+.mk-cap small{font-size:9.5px;letter-spacing:.16em;color:var(--cy)}.mk-cap b{font:700 15px 'Chakra Petch',sans-serif}.mk-cap span{font-size:12px;color:var(--mut)}
+.mk-deal{position:relative;display:flex;flex-direction:column;justify-content:center;gap:10px;padding:16px;border-radius:18px;overflow:hidden;border:1px solid rgb(255 211 92 / 45%);
+  background:linear-gradient(135deg,rgb(255 211 92 / 16%),rgb(255 92 240 / 8%) 60%,transparent),#0b0f1c}
+.mk-deal::before{content:'';position:absolute;inset:0;background:linear-gradient(105deg,transparent 35%,rgb(255 255 255 / 12%) 50%,transparent 65%);background-size:250% 100%;animation:mk-sheen 3.4s linear infinite;pointer-events:none}
+.mk-deal>div{display:grid;gap:4px;position:relative}.mk-deal small{font-size:10px;letter-spacing:.14em;color:var(--gold)}.mk-deal [data-cd]{font-variant-numeric:tabular-nums;color:#fff}
+.mk-deal b{font:700 20px 'Chakra Petch',sans-serif}.dl-ic{position:absolute;right:14px;top:12px;font-size:30px;color:var(--gold);filter:drop-shadow(0 0 10px rgb(255 211 92 / 70%));animation:mk-float 2.6s ease-in-out infinite}
+.dl-pr{display:flex;align-items:center;gap:10px;font:700 15px 'Chakra Petch',sans-serif}.dl-pr s{display:inline-flex;gap:4px;align-items:center;color:var(--faint);font-size:13px}
+.dl-pr strong{display:inline-flex;gap:5px;align-items:center;color:var(--gold);font-size:18px}.dl-pr em{padding:2px 8px;border-radius:99px;font-style:normal;font-size:11px;color:#04060c;background:var(--li)}
+.dl-go{position:relative;min-height:44px;border:0;border-radius:12px;font:700 13px 'Chakra Petch',sans-serif;letter-spacing:.12em;color:#2b1d00;background:linear-gradient(180deg,#ffe58a,#ffc233);transition:transform .12s}
+.dl-go:hover{transform:translateY(-1px)}.dl-go:active{transform:scale(.97)}
+
+/* Sekmeler (kayan gösterge) */
+.mk-tabs{position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin:14px 22px 0;padding:4px;border-radius:15px;background:rgb(255 255 255 / 5%);border:1px solid var(--ln)}
+.mk-tabs::before{content:'';position:absolute;top:4px;bottom:4px;left:4px;width:calc((100% - 8px) / 4);border-radius:11px;background:var(--brand);box-shadow:0 0 22px rgb(43 231 255 / 30%);
+  transform:translateX(calc(var(--i) * 100%));transition:transform .35s cubic-bezier(.3,1.3,.5,1)}
+.mk-tabs button{position:relative;min-height:44px;padding:0 8px;border:0;border-radius:11px;background:transparent;color:var(--mut);font:700 13px 'Chakra Petch',sans-serif;letter-spacing:.06em;white-space:nowrap;transition:color .25s}
+.mk-tabs button:hover{color:#fff}.mk-tabs button.on{color:#04060c}
+.mk-body{flex:1;overflow:auto;padding:16px 22px 22px;scrollbar-width:thin;scrollbar-color:rgb(255 255 255 / 20%) transparent}
+.mk-hint{margin:0 0 12px;font-size:12.5px;color:var(--mut)}.mk-hint b{color:var(--cy)}
+.mk-sec{display:flex;align-items:baseline;gap:10px;margin:18px 0 10px;font:700 12px 'Chakra Petch',sans-serif;letter-spacing:.18em;color:#dfe6f7}.mk-sec:first-child{margin-top:2px}.mk-sec small{font-weight:500;letter-spacing:.02em;color:var(--faint)}
+
+/* Kartlar (3B eğim, holografik yüzey) */
+.mk-grid{margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(auto-fill,minmax(204px,1fr));gap:14px;perspective:900px}
+.mk-grid.sm{grid-template-columns:repeat(auto-fill,minmax(186px,1fr))}
+.mk-card{--rx:0deg;--ry:0deg;--gx:50%;--gy:0%;position:relative;display:flex;flex-direction:column;gap:4px;padding:12px 12px 14px;border-radius:18px;overflow:hidden;
+  border:1px solid color-mix(in srgb,var(--r) 38%,transparent);background:linear-gradient(180deg,color-mix(in srgb,var(--r) 10%,#0d1220),#080b16);
+  transform:rotateX(var(--rx)) rotateY(var(--ry));transform-style:preserve-3d;transition:transform .18s ease-out,box-shadow .25s,border-color .25s;animation:mt-in .5s cubic-bezier(.2,0,0,1) both}
+.mk-card.still{animation:none}.mk-card:nth-child(2){animation-delay:.05s}.mk-card:nth-child(3){animation-delay:.1s}.mk-card:nth-child(4){animation-delay:.15s}.mk-card:nth-child(n+5){animation-delay:.2s}
+.mk-card:hover{border-color:var(--r);box-shadow:0 16px 38px color-mix(in srgb,var(--r) 32%,transparent)}
+.holo{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .25s;mix-blend-mode:screen;
+  background:radial-gradient(circle at var(--gx) var(--gy),rgb(255 255 255 / 26%),transparent 46%),linear-gradient(115deg,transparent 25%,color-mix(in srgb,var(--r) 30%,transparent) 45%,rgb(255 255 255 / 12%) 52%,transparent 70%)}
+.mk-card:hover .holo{opacity:1}
+.mk-card.efsane::after{content:'';position:absolute;inset:0;border-radius:inherit;padding:1.5px;pointer-events:none;
+  background:conic-gradient(from var(--a),var(--r),#fff,var(--r),transparent 55%,var(--r));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:mk-spin 5s linear infinite}
+.mk-card.on{border-color:var(--gr);box-shadow:0 0 0 1px var(--gr),0 0 26px rgb(95 224 140 / 22%)}
+.mk-card.hl{animation:mk-pop .9s ease-out both;box-shadow:0 0 0 2px var(--gold),0 0 34px rgb(255 211 92 / 45%)}
+.mk-card.fresh{animation:mk-pop .9s cubic-bezier(.3,1.5,.5,1) both,mk-flash 1.2s ease-out forwards}
+.rar{position:absolute;top:10px;left:10px;z-index:2;padding:2px 8px;border-radius:99px;font:700 9.5px 'Chakra Petch',sans-serif;letter-spacing:.14em;color:#04060c;background:var(--r)}
+.sale{position:absolute;top:10px;right:10px;z-index:2;padding:2px 8px;border-radius:99px;font:700 10px 'Chakra Petch',sans-serif;font-style:normal;color:#04060c;background:var(--li);animation:mk-pulse 1.8s ease-in-out infinite;--c1:#a8ff3e}
+.mk-art{position:relative;display:grid;place-items:center;height:124px;margin:-2px -2px 6px;border-radius:13px;overflow:hidden;transform:translateZ(18px);
+  background:radial-gradient(circle at 50% 62%,color-mix(in srgb,var(--r) 30%,transparent),transparent 68%)}
+.mk-card.own{align-items:stretch;gap:4px;margin-top:0}
+.skc{position:absolute;inset:0;width:100%;height:100%;filter:drop-shadow(0 8px 12px rgb(0 0 0 / 55%));transition:transform .3s}
+.mk-card:hover .skc{transform:scale(1.08)}
+.mk-card.skin:not(.own) .skc{filter:grayscale(.6) brightness(.6) drop-shadow(0 8px 12px rgb(0 0 0 / 55%))}
+.ped{position:absolute;bottom:10px;left:50%;width:74%;height:16px;transform:translateX(-50%);border-radius:50%;background:radial-gradient(ellipse,color-mix(in srgb,var(--r) 60%,transparent),transparent 70%)}
+.lk{position:absolute;right:8px;bottom:8px;display:grid;place-items:center;width:30px;height:30px;border-radius:50%;font-size:15px;background:rgb(4 6 12 / 78%);border:1px solid var(--ln);color:var(--gold)}
+.mk-card h4{margin:0;font:700 15px 'Chakra Petch',sans-serif}.mk-card p{margin:0 0 8px;font-size:12px;color:var(--mut);min-height:30px;line-height:1.25}
+/* Ölüm yemi rozeti: tema önizleme noktası + tek satır metin. Kartın geri
+   kalanına (nadirlik, fiyat, buton) dokunmaz; dar ekranda metin sarar. */
+.mk-death{display:flex;align-items:center;gap:7px;margin:0 0 8px;font-size:11px;font-weight:600;letter-spacing:.03em;color:var(--mut);line-height:1.35}
+.mk-death canvas{width:18px;height:18px;flex:none;border-radius:50%}
+.fxg .mk-art{height:112px;background:#060812}.fxc{position:absolute;inset:0;width:100%;height:100%}
+.mk-art .nm{display:grid;gap:4px;justify-items:center}.mk-art .nm small{font-size:10px;color:var(--faint)}.mk-art .nm .nc{font:700 24px 'Chakra Petch',sans-serif}
+.fr{display:grid;place-items:center;padding:6px}.fr .mt-ring{--s:78px}
+.mk-btn{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;min-height:46px;border:0;border-radius:12px;font:700 13px 'Chakra Petch',sans-serif;letter-spacing:.08em;transition:transform .12s,filter .15s;transform:translateZ(10px)}
+.mk-btn:active{transform:scale(.96)}.mk-btn:hover:not(:disabled){filter:brightness(1.08)}.mk-btn:disabled{cursor:default}
+.mk-btn.buy{color:#2b1d00;background:linear-gradient(180deg,#ffe58a,#ffc233)}.mk-btn.buy.poor{color:var(--faint);background:rgb(255 255 255 / 9%)}
+.mk-btn.use{color:#04060c;background:linear-gradient(90deg,#f2f5ff,#bfefff)}.mk-btn.eq{color:var(--gr);background:rgb(95 224 140 / 12%);border:1px solid rgb(95 224 140 / 40%)}
+.pr{display:inline-flex;align-items:center;gap:6px;font-size:15px}.pr s{color:rgb(43 29 0 / 55%);font-size:12px}.pr.poor s{color:var(--faint)}.pr.poor .ic{filter:grayscale(1) opacity(.55)}
+
+/* Güçlendirme listesi */
+.mk-list{margin:0;padding:0;list-style:none;display:grid;gap:12px;max-width:660px}
+.mk-list li{position:relative;display:grid;grid-template-columns:48px 1fr 124px;gap:14px;align-items:center;padding:14px;border-radius:16px;background:rgb(255 255 255 / 4%);border:1px solid var(--ln)}
+.mk-list li.hot{border-color:rgb(255 211 92 / 40%);background:linear-gradient(90deg,rgb(255 211 92 / 9%),transparent)}
+.mk-list .tag{position:absolute;top:-8px;left:14px;padding:2px 8px;border-radius:99px;font:700 9.5px 'Chakra Petch',sans-serif;font-style:normal;letter-spacing:.14em;color:#2b1d00;background:var(--gold)}
+.mk-list b{display:block;font:700 15px 'Chakra Petch',sans-serif}.mk-list small{display:block;margin-top:2px;font-size:12px;font-weight:500;letter-spacing:0}
+
+/* Profil: isim renkleri (liderlikte + kartta) */
+.nc{color:var(--nc,#fff);text-shadow:0 0 12px var(--nc,transparent)}
+.mt-lb .me.nc span,.mt-lb .me.nc em+span{color:var(--nc);text-shadow:0 0 10px var(--nc)}
+.rb,.mt-lb .me.rb span{background:linear-gradient(90deg,#ff4d4d,#ffe14a,#4dff6a,#3fa7ff,#b46bff,#ff4d4d);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent!important;text-shadow:none;animation:mk-sheen 3s linear infinite}
+span.nc.rb,span.nc.nf,span.nc.gd{display:inline-block}
+/* düz renkli isimler: yumuşak nabız */
+span.nc:not(.rb):not(.nf):not(.gd),.mt-lb .me.nc:not(.rb):not(.nf):not(.gd) span{animation:nc-pulse 2s ease-in-out infinite}
+@keyframes nc-pulse{50%{text-shadow:0 0 24px var(--nc),0 0 6px var(--nc),0 0 2px var(--nc)}}
+/* ALTIN: kayan parlak ışık */
+span.nc.gd,.mt-lb .me.gd span{background:linear-gradient(90deg,#c8861a,#ffd35c 25%,#fffbe0 50%,#ffd35c 75%,#c8861a);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent!important;text-shadow:none;
+  animation:mk-sheen 2.2s linear infinite,gd-glow 1.4s ease-in-out infinite alternate}
+@keyframes gd-glow{from{filter:drop-shadow(0 0 3px #ffb02e)}to{filter:drop-shadow(0 0 9px #ffd35c)}}
+/* CEHENNEM ALEVİ: akan alev + alt ışıma + yükselen kıvılcımlar */
+span.nc.nf,.mt-lb .me.nf span{position:relative;isolation:isolate;background:linear-gradient(90deg,#ff1f1f,#ff6a1a,#ffc23a,#fff6d0,#ffc23a,#ff6a1a,#ff1f1f);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent!important;text-shadow:none;
+  animation:mk-sheen 1.5s linear infinite,nf-glow .9s ease-in-out infinite alternate}
+span.nc.nf::before,.mt-lb .me.nf span::before{content:attr(data-t);position:absolute;left:0;top:0;z-index:-1;color:#ff3a0a;-webkit-text-fill-color:#ff3a0a;filter:blur(6px);opacity:.8;pointer-events:none}
+span.nc.nf::after,.mt-lb .me.nf span::after{content:'';position:absolute;left:0;right:0;bottom:45%;height:34px;pointer-events:none;-webkit-text-fill-color:initial;background-repeat:no-repeat;
+  background-image:radial-gradient(circle at 8% 100%,#ffd35c 0 1.6px,transparent 2.6px),radial-gradient(circle at 24% 100%,#ff7a1a 0 2px,transparent 3px),radial-gradient(circle at 42% 100%,#fff3a0 0 1.4px,transparent 2.4px),radial-gradient(circle at 58% 100%,#ff4a1a 0 2px,transparent 3px),radial-gradient(circle at 76% 100%,#ffb02e 0 1.6px,transparent 2.6px),radial-gradient(circle at 92% 100%,#ff7a1a 0 1.8px,transparent 2.8px);
+  animation:nf-ember 2.8s ease-out infinite}
+@keyframes nf-glow{from{filter:drop-shadow(0 0 3px #ff3a0a) brightness(1)}to{filter:drop-shadow(0 0 10px #ff8a1a) brightness(1.2)}}
+@keyframes nf-ember{0%{opacity:0;background-position:0 0,0 0,0 0,0 0,0 0,0 0}20%{opacity:1}100%{opacity:0;background-position:0 -26px,0 -18px,0 -32px,0 -22px,0 -16px,0 -28px}}
+
+/* LİDERLİKTE sakin isimler: liste ~8Hz yeniden kurulur, --ph fazıyla
+   animasyon kaldığı yerden sürer. Opaklık/filter/text-shadow nabzı yok,
+   kopya/kıvılcım katmanı yok; gradientte yalnızca yavaş tek yönlü kayma. */
+@keyframes lb-drift{to{background-position:200% 0}}
+/* İsim hücresine sığar: gradient yazı genişliğine yayılır, ellipsis sürer. */
+.mt-lb li span{justify-self:start;max-width:100%}
+/* Sıra no ve skor efekt dışı: net ve okunaklı. */
+.mt-lb li.nc em,.mt-lb li.nc b{color:var(--mut);text-shadow:none}
+/* Düz renk: animasyonsuz, statik küçük parıltı. */
+.mt-lb .me.nc:not(.rb):not(.nf):not(.gd) span{animation:none;text-shadow:none;filter:drop-shadow(0 0 3px var(--nc))}
+/* Gradientli: yavaş kayma + faz senkronu, parıltı küçük ve statik. */
+.mt-lb .me.rb span,.mt-lb .me.gd span,.mt-lb .me.nf span{text-shadow:none;filter:drop-shadow(0 0 3px rgb(255 255 255 / 35%))}
+.mt-lb .me.rb span{animation:lb-drift 12s linear infinite;animation-delay:calc(var(--ph,0)*-1s)}
+.mt-lb .me.gd span{animation:lb-drift 10s linear infinite;animation-delay:calc(var(--ph,0)*-1s)}
+.mt-lb .me.nf span{animation:lb-drift 10s linear infinite;animation-delay:calc(var(--ph,0)*-1s)}
+/* Liderlikte alev kopyası ve kıvılcımlar yok. */
+.mt-lb .me.nf span::before,.mt-lb .me.nf span::after{display:none}
+
+/* Profil: rozet çerçeveleri — içten dışa: rozet → XP halkası → ışıklı iç çizgi → dış bant.
+   HTML değişmedi (.mt-ring > i.fx + i.fx2). Katmanlar:
+   .mt-ring        sabit iç çizgi + nabızlı parıltı (--lo ⇄ --hi)
+   .fx / .fx2      dönen katmanlar; ::before = maskeli bant, ::after = parlak baş / yıldız
+   .mt-ring::after sabit süs (segment izi, yörünge çizgisi, yıldız parıltısı) */
+@keyframes fr-beat{50%{box-shadow:var(--hi)}}
+@keyframes fr-flick{0%,100%{box-shadow:var(--lo)}44%{box-shadow:var(--hi)}78%,82%{box-shadow:var(--lo)}80%{box-shadow:0 0 0 2px rgb(43 231 255 / 45%),0 0 3px rgb(43 231 255 / 25%)}}
+@keyframes fr-twinkle{0%,100%{opacity:.2;scale:.4}50%{opacity:1;scale:1}}
+@keyframes fr-hue{from{filter:blur(var(--bl)) hue-rotate(0deg)}to{filter:blur(var(--bl)) hue-rotate(360deg)}}
+
+.mt-ring[class*='fr-']{margin:calc(var(--s)*.14);--bw:max(3px,calc(var(--s)*.07));--mw:var(--bw);box-shadow:var(--lo);animation:fr-beat var(--bt,7s) ease-in-out infinite;
+  --star:linear-gradient(90deg,transparent,#fff 50%,transparent) center/100% 1.5px no-repeat,linear-gradient(transparent,#fff 50%,transparent) center/1.5px 100% no-repeat,radial-gradient(circle,#fff 0 16%,var(--sg,#fff) 28%,transparent 62%)}
+.mt-ring .fx{position:absolute;display:block;border-radius:50%;pointer-events:none;inset:calc(var(--s)*-.12);will-change:transform;animation:mk-turn var(--sp,8s) linear infinite}
+.mt-ring .fx::before,.mt-ring .fx::after{content:'';position:absolute;pointer-events:none}
+.mt-ring .fx::before{inset:0;border-radius:50%;-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - var(--mw) - 1px),#000 calc(100% - var(--mw)));mask:radial-gradient(farthest-side,transparent calc(100% - var(--mw) - 1px),#000 calc(100% - var(--mw)))}
+/* parlak baş / yıldız: bandın tam tepe noktasında, katmanla birlikte döner */
+.mt-ring .fx::after{left:50%;top:calc(var(--mw)/2);translate:-50% -50%;border-radius:50%}
+.mt-ring .fx2{animation-direction:reverse}
+.mt-ring[class*='fr-']::after{content:'';position:absolute;pointer-events:none}
+
+/* NEON: parlayan tüp halka + segmentli iz + zıt yönde dönen iki kuyruklu kuyrukyıldız (hafif titreme) */
+.mt-ring.fr-neon{--fg:#2be7ff;--sp:3.4s;--bt:6s;
+  --lo:0 0 0 2px #2be7ff,0 0 7px 1px rgb(43 231 255 / 75%),0 0 18px rgb(43 231 255 / 38%);
+  --hi:0 0 0 2px #c4faff,0 0 12px 2px rgb(43 231 255 / 100%),0 0 28px rgb(43 231 255 / 60%);animation-name:fr-flick}
+.mt-ring.fr-neon::after{inset:calc(var(--s)*-.12);border-radius:50%;background:repeating-conic-gradient(rgb(43 231 255 / 40%) 0 4deg,transparent 4deg 10deg);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - var(--mw) - 1px),#000 calc(100% - var(--mw)));mask:radial-gradient(farthest-side,transparent calc(100% - var(--mw) - 1px),#000 calc(100% - var(--mw)))}
+.mt-ring.fr-neon .fx::before{background:conic-gradient(from -125deg,transparent 0deg,rgb(43 231 255 / 35%) 40deg,rgb(43 231 255 / 95%) 110deg,#e8fdff 124deg,transparent 124.6deg)}
+.mt-ring.fr-neon .fx::after{width:calc(var(--mw)*1.5);aspect-ratio:1;background:#fff;box-shadow:0 0 5px 2px #2be7ff,0 0 14px 4px rgb(43 231 255 / 65%)}
+.mt-ring.fr-neon .fx2{--sp:5.4s;opacity:.9}
+.mt-ring.fr-neon .fx2::before{background:conic-gradient(from 0deg,#d8f4ff 0deg,rgb(79 125 255 / 85%) 18deg,rgb(79 125 255 / 25%) 70deg,transparent 100deg,transparent 360deg)}
+.mt-ring.fr-neon .fx2::after{background:#d8f4ff;box-shadow:0 0 5px 2px #4f7dff,0 0 12px 3px rgb(79 125 255 / 60%)}
+
+/* ALTIN: metalik oyuklu bezel (yavaş dönen yansıma) + süpüren parlama + yıldız pırıltıları */
+.mt-ring.fr-gold{--fg:#ffd35c;--bt:5s;--mw:max(3.5px,calc(var(--s)*.08));--sg:#ffd35c;
+  --lo:0 0 0 2px #ffd35c,0 0 0 3px rgb(122 74 0 / 60%),0 0 10px rgb(255 190 60 / 60%),0 0 22px rgb(255 160 40 / 30%);
+  --hi:0 0 0 2px #fff0b0,0 0 0 3px rgb(122 74 0 / 60%),0 0 15px rgb(255 205 80 / 95%),0 0 32px rgb(255 170 40 / 55%)}
+.mt-ring.fr-gold .fx{--sp:16s}
+.mt-ring.fr-gold .fx::before{background:conic-gradient(#7a4a00,#d99a1a 25deg,#fff1b8 48deg,#ffd35c 62deg,#9a6200 100deg,#5e3a00 130deg,#c88a14 165deg,#ffe9a0 190deg,#fff 202deg,#ffc233 220deg,#8a5500 260deg,#b9780f 300deg,#ffe58a 330deg,#7a4a00)}
+.mt-ring.fr-gold .fx::after{top:auto;bottom:calc(var(--mw)/2);translate:-50% 50%;width:max(8px,calc(var(--s)*.16));aspect-ratio:1;background:var(--star);border-radius:0;animation:fr-twinkle 2.6s ease-in-out -1.1s infinite}
+.mt-ring.fr-gold .fx2{--sp:4.6s;animation-timing-function:cubic-bezier(.55,.05,.3,1)}
+.mt-ring.fr-gold .fx2::before{background:conic-gradient(from -70deg,transparent 0deg,rgb(255 244 190 / 55%) 55deg,#fff 69deg,transparent 70deg)}
+.mt-ring.fr-gold .fx2::after{top:calc(var(--mw)/2 - var(--s)*.025);bottom:auto;translate:-50% -50%;width:max(10px,calc(var(--s)*.22));aspect-ratio:1;background:var(--star);border-radius:0;animation:fr-twinkle 1.5s ease-in-out infinite}
+.mt-ring.fr-gold::after{left:95%;top:5%;translate:-50% -50%;width:max(7px,calc(var(--s)*.15));aspect-ratio:1;background:var(--star);animation:fr-twinkle 3.1s ease-in-out -.6s infinite}
+
+/* YÖRÜNGE: kesikli yörünge izi + zıt yönlere dönen altın gezegen ve buz-mavisi uydu (yumuşak kuyruklu) */
+.mt-ring.fr-orbit{--fg:#9d5cff;--bt:8s;--pl:max(6px,calc(var(--s)*.125));
+  --lo:0 0 0 2px rgb(157 92 255 / 90%),0 0 10px rgb(157 92 255 / 60%),0 0 22px rgb(157 92 255 / 28%);
+  --hi:0 0 0 2px rgb(205 170 255 / 100%),0 0 15px rgb(157 92 255 / 95%),0 0 32px rgb(157 92 255 / 50%)}
+.mt-ring.fr-orbit::after{inset:calc(var(--s)*-.12);border-radius:50%;border:1px dashed rgb(196 160 255 / 48%)}
+.mt-ring.fr-orbit .fx{--sp:6s}
+.mt-ring.fr-orbit .fx::before{inset:calc(var(--pl)*-.3);--mw:calc(var(--pl)*.6);background:conic-gradient(from -85deg,transparent 0deg,rgb(157 92 255 / 22%) 12deg,rgb(214 178 255 / 90%) 84deg,transparent 84.6deg)}
+.mt-ring.fr-orbit .fx::after{top:0;width:var(--pl);aspect-ratio:1;background:radial-gradient(circle at 34% 30%,#fff 0 12%,#ffe58a 30%,#ffb02e 62%,#a85a00);box-shadow:0 0 7px 1px rgb(255 190 60 / 95%),0 0 15px 2px rgb(255 160 40 / 50%)}
+.mt-ring.fr-orbit .fx2{--sp:9.5s;--pl:max(5px,calc(var(--s)*.095))}
+.mt-ring.fr-orbit .fx2::before{background:conic-gradient(from 0deg,rgb(200 250 255 / 90%) 0deg,rgb(43 231 255 / 28%) 62deg,transparent 80deg,transparent 360deg)}
+.mt-ring.fr-orbit .fx2::after{background:radial-gradient(circle at 34% 30%,#fff 0 14%,#b6f6ff 34%,#2be7ff 66%,#08627f);box-shadow:0 0 6px 1px rgb(43 231 255 / 95%),0 0 13px 2px rgb(43 231 255 / 45%)}
+
+/* AURORA: akan kutup ışığı perdesi (yumuşak, bulanık) + keskin şerit + gökyüzü yıldızları */
+.mt-ring.fr-aurora{--fg:#a8ff3e;--bt:7s;--mw:max(4px,calc(var(--s)*.095));--bl:max(1.5px,calc(var(--s)*.03));
+  --lo:0 0 0 1px rgb(168 255 62 / 60%),0 0 10px rgb(168 255 62 / 55%),0 0 24px rgb(43 231 255 / 35%);
+  --hi:0 0 0 1px rgb(43 231 255 / 75%),0 0 16px rgb(43 231 255 / 70%),0 0 34px rgb(157 92 255 / 50%)}
+.mt-ring.fr-aurora .fx{--sp:15s;filter:blur(var(--bl))}
+.mt-ring.fr-aurora .fx::before{background:conic-gradient(#a8ff3e,#2be7ff 20%,#9d5cff 36%,transparent 50%,transparent 56%,#2be7ff 70%,#a8ff3e 86%,#a8ff3e)}
+.mt-ring.fr-aurora .fx2{filter:none;--sp:9s;--mw:max(2px,calc(var(--s)*.035));mix-blend-mode:screen}
+.mt-ring.fr-aurora .fx2::before{background:conic-gradient(from 90deg,transparent 0,#2be7ff 14%,#eaffd2 22%,#a8ff3e 30%,transparent 46%,transparent 62%,#9d5cff 74%,#2be7ff 86%,transparent)}
+.mt-ring.fr-aurora .fx2::after{inset:calc(var(--s)*-.02);left:0;top:0;translate:none;border-radius:50%;background:
+  radial-gradient(circle,#fff 0 30%,transparent 70%) 14% 18%/4px 4px no-repeat,radial-gradient(circle,#fff 0 30%,transparent 70%) 90% 62%/3px 3px no-repeat,radial-gradient(circle,#fff 0 30%,transparent 70%) 40% 96%/4px 4px no-repeat;animation:fr-twinkle 3.3s ease-in-out infinite}
+.mt-ring.fr-aurora::after{inset:calc(var(--s)*-.14);border-radius:50%;background:
+  radial-gradient(circle,#fff 0 30%,transparent 70%) 8% 26%/4px 4px no-repeat,radial-gradient(circle,#dfffe6 0 30%,transparent 70%) 94% 22%/3px 3px no-repeat,
+  radial-gradient(circle,#fff 0 30%,transparent 70%) 78% 94%/4px 4px no-repeat,radial-gradient(circle,#dfffe6 0 30%,transparent 70%) 18% 88%/3px 3px no-repeat;animation:fr-twinkle 2.2s ease-in-out -.8s infinite}
+
+/* PRİZMA: holografik gökkuşağı bant (parlak yansımalı) + renk döndüren yumuşak hale + elmas pırıltısı */
+.mt-ring.fr-prism{--fg:#ff5cf0;--bt:6s;--mw:max(3.5px,calc(var(--s)*.085));--bl:max(2px,calc(var(--s)*.05));--sg:#ff9af5;
+  --lo:0 0 0 2px rgb(255 255 255 / 85%),0 0 10px rgb(255 92 240 / 65%),0 0 22px rgb(43 231 255 / 32%);
+  --hi:0 0 0 2px #fff,0 0 15px rgb(255 92 240 / 95%),0 0 32px rgb(43 231 255 / 55%)}
+.mt-ring.fr-prism .fx{--sp:5.5s;z-index:1}
+.mt-ring.fr-prism .fx::before{background:conic-gradient(from 20deg,transparent 0,rgb(255 255 255 / 70%) 10deg,transparent 30deg,transparent 180deg,rgb(255 255 255 / 50%) 190deg,transparent 210deg),conic-gradient(#ff5cf0,#ff6a5c 50deg,#ffd35c 100deg,#a8ff3e 150deg,#2be7ff 210deg,#5a7bff 260deg,#9d5cff 310deg,#ff5cf0)}
+.mt-ring.fr-prism .fx::after{top:calc(var(--mw)/2 - var(--s)*.02);width:max(10px,calc(var(--s)*.22));aspect-ratio:1;background:var(--star);border-radius:0;animation:fr-twinkle 1.8s ease-in-out infinite}
+.mt-ring.fr-prism .fx2{z-index:0;--sp:9s;--mw:calc(var(--s)*.1);mix-blend-mode:screen;opacity:.85;animation:mk-turn 9s linear infinite reverse,fr-hue 6s linear infinite;filter:blur(var(--bl))}
+.mt-ring.fr-prism .fx2::after{display:none}
+.mt-ring.fr-prism .fx2::before{background:conic-gradient(#ff5cf0,#ffd35c 60deg,#a8ff3e 120deg,#2be7ff 200deg,#9d5cff 290deg,#ff5cf0)}
+.mt-ring.fr-prism::after{left:95%;top:5%;translate:-50% -50%;width:max(7px,calc(var(--s)*.15));aspect-ratio:1;background:var(--star);animation:fr-twinkle 2.8s ease-in-out -.4s infinite}
+
+/* ═══ Yeni çerçeveler: Yılan Pulu · Buz Zırhı · Magma ═══ */
+@keyframes fr-flame{0%,100%{box-shadow:var(--lo)}10%{box-shadow:var(--hi)}22%{box-shadow:var(--lo)}34%{box-shadow:var(--hi)}41%{box-shadow:var(--lo)}58%{box-shadow:var(--hi)}70%,86%{box-shadow:var(--lo)}93%{box-shadow:var(--hi)}}
+@keyframes fr-rise{0%{translate:0 4px;opacity:0}25%{opacity:1}100%{translate:0 -10px;opacity:0}}
+
+/* YILAN PULU: pul dokulu yeşil bant (yavaş döner) + çevresinde dolanan yılan (gövde + parlak kafa) */
+.mt-ring.fr-snake{--fg:#4ee063;--bt:5s;--mw:max(3.5px,calc(var(--s)*.08));
+  --lo:0 0 0 2px #4ee063,0 0 8px rgb(78 224 99 / 65%),0 0 18px rgb(78 224 99 / 30%);
+  --hi:0 0 0 2px #d6ffd0,0 0 13px rgb(120 255 120 / 95%),0 0 28px rgb(78 224 99 / 55%)}
+.mt-ring.fr-snake .fx{--sp:26s}
+.mt-ring.fr-snake .fx::before{background:repeating-conic-gradient(#0f5a26 0 3deg,#2fbf55 3deg 6deg,#8cff8a 6deg 7deg,#1a8a3c 7deg 9deg)}
+.mt-ring.fr-snake .fx2{--sp:4.4s;--mw:calc(var(--bw)*1.5)}
+.mt-ring.fr-snake .fx2::before{background:conic-gradient(from -150deg,transparent 0deg,rgb(31 156 71 / 70%) 70deg,#4ee063 130deg,#d6ff7a 149deg,transparent 149.6deg)}
+.mt-ring.fr-snake .fx2::after{width:calc(var(--mw)*1.35);aspect-ratio:1;background:radial-gradient(circle at 34% 32%,#fff 0 9%,#d6ff7a 26%,#4ee063 68%,#12823a);box-shadow:0 0 6px 1px #7dff7a,0 0 14px 3px rgb(78 224 99 / 55%)}
+
+/* BUZ ZIRHI: dönen buz ışınları (iki katman, zıt yön) + facet'li buz bandı + soğuk pırıltı */
+.mt-ring.fr-ice{--fg:#8fd3ff;--bt:7s;--mw:max(3px,calc(var(--s)*.05));--sg:#8fd3ff;
+  --lo:0 0 0 2px #cdeeff,0 0 9px rgb(143 211 255 / 65%),0 0 20px rgb(74 168 255 / 32%);
+  --hi:0 0 0 2px #fff,0 0 14px rgb(160 225 255 / 95%),0 0 30px rgb(74 168 255 / 55%)}
+.mt-ring.fr-ice .fx{--sp:30s;inset:calc(var(--s)*-.13);--mw:calc(var(--s)*.085)}
+.mt-ring.fr-ice .fx::before{background:repeating-conic-gradient(#fff 0 3deg,transparent 3deg 12deg);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - var(--mw)),#000 calc(100% - var(--mw) + 1px),transparent 100%);mask:radial-gradient(farthest-side,transparent calc(100% - var(--mw)),#000 calc(100% - var(--mw) + 1px),transparent 100%)}
+.mt-ring.fr-ice .fx:not(.fx2)::after{inset:0;left:0;top:0;translate:none;border-radius:50%;background:repeating-conic-gradient(from 6deg,#9fdcff 0 1.6deg,transparent 1.6deg 12deg);
+  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - var(--mw)*.55),#000 calc(100% - var(--mw)*.55 + 1px),transparent 100%);mask:radial-gradient(farthest-side,transparent calc(100% - var(--mw)*.55),#000 calc(100% - var(--mw)*.55 + 1px),transparent 100%)}
+.mt-ring.fr-ice .fx2{--sp:18s;inset:calc(var(--s)*-.085);--mw:max(3px,calc(var(--s)*.045))}
+.mt-ring.fr-ice .fx2::before{-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - var(--mw) - 1px),#000 calc(100% - var(--mw)));mask:radial-gradient(farthest-side,transparent calc(100% - var(--mw) - 1px),#000 calc(100% - var(--mw)));
+  background:conic-gradient(#e8f9ff,#8fd3ff 40deg,#fff 70deg,#4aa8ff 120deg,#bfeaff 170deg,#fff 200deg,#6bbcff 260deg,#cfeeff 320deg,#e8f9ff)}
+.mt-ring.fr-ice .fx2::after{top:calc(var(--mw)/2 - var(--s)*.02);width:max(9px,calc(var(--s)*.2));aspect-ratio:1;background:var(--star);border-radius:0;animation:fr-twinkle 2.2s ease-in-out infinite}
+.mt-ring.fr-ice::after{left:95%;top:5%;translate:-50% -50%;width:max(7px,calc(var(--s)*.15));aspect-ratio:1;background:var(--star);animation:fr-twinkle 3s ease-in-out -.9s infinite}
+
+/* MAGMA: çatlaklarından lav parlayan bant + kor süpürmesi + yükselen közler + alev gibi titreyen parıltı */
+.mt-ring.fr-magma{--fg:#ff6a1a;--bt:3s;--mw:max(3.5px,calc(var(--s)*.085));animation-name:fr-flame;
+  --lo:0 0 0 2px #ff7a1a,0 0 9px rgb(255 90 20 / 70%),0 0 22px rgb(255 60 10 / 38%);
+  --hi:0 0 0 2px #ffc46a,0 0 14px rgb(255 130 30 / 100%),0 0 32px rgb(255 70 10 / 60%)}
+.mt-ring.fr-magma .fx{--sp:20s}
+.mt-ring.fr-magma .fx::before{background:conic-gradient(#ff4a0a,#ffa02e 14deg,#ffe08a 20deg,#ff6a1a 30deg,#3a0f03 52deg,#5a1a06 90deg,#ff5a10 108deg,#ffc14a 114deg,#ff4a0a 124deg,#2a0a02 150deg,#4a1405 200deg,#ff6a1a 226deg,#ffe08a 232deg,#ff6a1a 240deg,#3a0f03 266deg,#5a1a06 310deg,#ff4a0a 340deg,#ff4a0a)}
+.mt-ring.fr-magma .fx2{--sp:3.8s}
+.mt-ring.fr-magma .fx2::before{background:conic-gradient(from -115deg,transparent 0deg,rgb(255 110 20 / 45%) 50deg,rgb(255 190 80 / 90%) 108deg,#fff4c0 114deg,transparent 114.6deg)}
+.mt-ring.fr-magma .fx2::after{width:calc(var(--mw)*1.25);aspect-ratio:1;background:#fff4c0;box-shadow:0 0 5px 2px #ffb02e,0 0 14px 4px rgb(255 90 20 / 65%)}
+.mt-ring.fr-magma::after{inset:calc(var(--s)*-.14);border-radius:50%;background:
+  radial-gradient(circle,#ffd35c 0 35%,transparent 70%) 30% 5%/3px 3px no-repeat,radial-gradient(circle,#ff8a2a 0 35%,transparent 70%) 62% 1%/3px 3px no-repeat,radial-gradient(circle,#ffb02e 0 35%,transparent 70%) 80% 9%/2px 2px no-repeat;animation:fr-rise 2s ease-out infinite}
+
+/* Menüde kilitli özel görünüm yuvaları */
+.mt-locked{position:relative;filter:grayscale(.8) brightness(.65)}
+.mt-locked::after{content:'';position:absolute;right:2px;bottom:2px;width:16px;height:16px;border-radius:50%;background:#0a0e19 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 11V8a5 5 0 0110 0v3M6 11h12v9H6z' fill='none' stroke='%23ffd35c' stroke-width='2.2'/%3E%3C/svg%3E") center/11px no-repeat;border:1px solid rgb(255 211 92 / 50%)}
+
+@media (max-width:720px){
+  .mk-top{grid-template-columns:1fr;margin:0 14px}.mk-show{height:150px}.mk-deal{flex-direction:row;align-items:center;flex-wrap:wrap}.mk-deal>div{flex:1}.dl-go{width:100%}
+  .mk>header{padding:16px 14px 8px}.mk-tabs{margin:12px 14px 0}.mk-tabs button{font-size:11.5px;letter-spacing:0}.mk-body{padding:14px}
+  .mk-grid,.mk-grid.sm{grid-template-columns:repeat(2,1fr);gap:10px}.mk-art{height:98px}.fxg .mk-art{height:92px}.mk-card h4{font-size:14px}.mk-card p{font-size:11.5px}
+  .mk-list li{grid-template-columns:44px 1fr}.mk-list .mk-btn{grid-column:1/-1}
+}
+@media (max-width:480px){
+  .mk-tabs button{min-width:0;padding:0 2px;font-size:10.5px;letter-spacing:0;overflow:hidden;text-overflow:ellipsis}
+  .mk-btn{font-size:12px;letter-spacing:.02em;gap:5px}.mk-show{height:128px}.mk-deal{padding:12px}.mk-deal b{font-size:17px}.dl-go{min-height:40px}
+  .mk>header h2{font-size:22px}.mk-cap{padding:6px 10px}.mk-cap b{font-size:14px}
+}
+@media (hover:none){.mk-card{transform:none!important}}
+html.fx-calm .mt-card.mk,html.fx-calm .mk-card,html.fx-calm .mk-card.efsane::after,html.fx-calm .mk>header h2,html.fx-calm .mk-deal::before,html.fx-calm .dl-ic,html.fx-calm .sale{animation:none!important}
+html.fx-calm .mk-card,html.fx-calm .mk-tabs::before{transition:none}html.fx-calm .mk-card{transform:none!important}
+
+/* ═══ Profilim (market/giriş dili: aynı kart + neon kenar, sekmeler marketten,
+   kartlar ölüm ekranından. Yeni animasyon YOK: sakin mod + reduced-motion
+   mevcut kurallarla kapsanır.) ═ */
+.mt-card.prf{width:min(600px,100%);max-height:min(94vh,880px);display:flex;flex-direction:column;padding:22px 22px 0;overflow:hidden}
+.mt-card.prf>header{margin-bottom:12px}
+.prf-head{display:flex;align-items:center;gap:14px}
+.prf-head img{width:56px;height:56px;flex:none;border-radius:50%;object-fit:cover}
+.prf-head .pf-init{width:56px;height:56px;flex:none;font-size:22px}
+.prf-id{flex:1;display:grid;gap:4px;min-width:0}
+.prf-id>b{font:700 17px 'Chakra Petch',sans-serif;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.prf-id .mt-bar{margin-top:2px}
+.prf-id small{font-size:11px;color:var(--mut);letter-spacing:.04em;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.prf-head .mt-ring{flex:none}
+.prf-tabs{margin:14px 0 0}
+.prf-login{margin:12px 0 0}
+.prf-coll{display:grid;gap:3px;margin-bottom:12px}
+.prf-coll:last-child{margin-bottom:2px}
+.prf-coll>div{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.prf-coll b{font:700 13.5px 'Chakra Petch',sans-serif}
+.prf-coll span{font:600 12px 'Chakra Petch',sans-serif;color:var(--mut);font-variant-numeric:tabular-nums}
+.prf-hist{margin:12px 0 0;padding:0;list-style:none;display:grid;gap:6px}
+.prf-hist li{display:grid;grid-template-columns:auto 1fr auto;gap:4px 12px;align-items:baseline;padding:9px 12px;border-radius:12px;border:1px solid var(--ln);background:rgb(255 255 255 / 3%)}
+.prf-hist b{font:700 17px 'Chakra Petch',sans-serif;font-variant-numeric:tabular-nums}
+.prf-hist span{font-size:12px;color:var(--mut);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.prf-hist em{font-style:normal;font-size:11.5px;color:var(--faint);white-space:nowrap}
+.prf-empty{margin:6px 0 0;padding:22px 12px;text-align:center;font-size:13px;color:var(--faint)}
+/* Üyelik + seri satırları: sade, iki satır, ikonlu */
+.prf-mem{display:grid;gap:6px;margin-bottom:14px;padding:10px 14px;border-radius:12px;border:1px solid var(--ln);background:rgb(255 255 255 / 3%)}
+.prf-mem span{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--mut)}
+.prf-mem .ic{font-size:15px;color:var(--cy);flex:none}
+/* Ara başlık (ORTALAMALAR): küçük, harf aralıklı */
+.prf-sec{margin:16px 0 8px;font:700 11px 'Chakra Petch',sans-serif;letter-spacing:.2em;color:var(--faint)}
+/* Başarımlar: market rozeti (.rar) aynen kullanılır, yalnızca konumu sıfırlanır */
+.rar.ach-rar{position:static;flex:none}
+.ach-sum{display:flex;align-items:center;gap:12px;margin-bottom:4px}
+.ach-sum>b{font:700 14px 'Chakra Petch',sans-serif;white-space:nowrap}
+.ach-sum .mt-bar{flex:1}
+.ach{margin:10px 0 0;padding:0;list-style:none;display:grid;gap:8px}
+.ach li{display:grid;grid-template-columns:44px 1fr auto;gap:12px;align-items:center;padding:10px 12px;border-radius:14px;border:1px solid var(--ln);background:rgb(255 255 255 / 3%)}
+.ach .ach-ic{width:44px;height:44px;display:grid;place-items:center;border-radius:12px;background:rgb(255 255 255 / 5%);color:var(--cy)}
+.ach .ach-ic .ic{width:24px;height:24px}
+.ach li.lock{opacity:.55}
+.ach li.lock .ach-ic{color:var(--faint)}
+.ach b{display:block;font:700 14px 'Chakra Petch',sans-serif}
+.ach small{display:block;font-size:12px;color:var(--mut);margin-top:1px}
+.ach time{display:block;margin-top:4px;font-size:11px;font-weight:600;letter-spacing:.06em;color:var(--gr)}
+.ach-sub{display:flex;align-items:center;gap:8px;margin-top:6px;font-size:11.5px;color:var(--faint);white-space:nowrap}
+.ach-sub .mt-bar{flex:1;min-width:0}
+@media (max-width:560px){
+  [data-profile]{place-items:end center;padding:0 0 max(12px,env(safe-area-inset-bottom))}
+  [data-profile] .mt-card.prf{width:100%;border-radius:22px 22px 0 0;max-height:92vh}
+}

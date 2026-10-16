@@ -1,0 +1,78 @@
+/* Fontlar projeye gömülü (self-host). CDN YOK: ağ kapalıyken de aynı
+   görünür — geçmişte CDN bağımlılığı yüzünden menü serif yedeğe düşmüştü.
+   latin + latin-ext alt kümeleri birlikte yüklenir; Türkçe İ ı Ş ş Ğ ğ Ü ü
+   Ö ö Ç ç karakterlerini kapsar. */
+@import '@fontsource/chakra-petch/latin-700.css';
+@import '@fontsource/chakra-petch/latin-ext-700.css';
+@import '@fontsource/exo-2/latin-500.css';
+@import '@fontsource/exo-2/latin-600.css';
+@import '@fontsource/exo-2/latin-ext-500.css';
+@import '@fontsource/exo-2/latin-ext-600.css';
+
+:root {
+  --font-display: 'Chakra Petch', system-ui, sans-serif;
+  --font-body: 'Exo 2', system-ui, sans-serif;
+}
+
+/* Oyun kabuğu. Menü kendi token sistemini src/menu/menu.css içinde taşır;
+   buradaki değerler yalnızca oyun canvas'ının etrafını ve boost düğmesini
+   boyar. `--accent` asit yeşil değil: nötr, hafif soğuk bir ton, çünkü
+   arenadaki yılan ve yem renkleri kromayı çoktan taşıyor. */
+:root {
+  --bg-0: #04060c;
+  --text: #f2f5ff;
+  --accent: #9fb3c8;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body {
+  height: 100%;
+  margin: 0;
+  background: var(--bg-0);
+  color: var(--text);
+  overflow: hidden;
+  /* Oyun sürüklemesi yalnız canvas'ta kilitli: body'de `none` marketin
+     kaydırılabilir panellerini (.mk-body) dokunmatikte öldürüyordu. */
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-font-smoothing: antialiased;
+}
+#g { position: fixed; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
+:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
+
+/* mobil boost kontrolü (oyun girdisi) */
+#bb {
+  position: fixed;
+  left: 16px;
+  bottom: calc(74px + env(safe-area-inset-bottom, 0px));
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: 2px solid rgba(242, 245, 255, 0.34);
+  background: radial-gradient(circle at 32% 28%, rgba(233, 244, 255, 0.16), rgba(4, 6, 12, 0.62));
+  color: var(--accent);
+  font: 700 11px system-ui, sans-serif;
+  letter-spacing: 1.5px;
+  display: none;
+  place-items: center;
+  touch-action: none;
+  z-index: 5;
+  box-shadow: 0 0 20px rgba(4, 6, 12, 0.55);
+  transition: transform 140ms ease-out, border-color 140ms;
+}
+#bb:active { transform: scale(0.94); border-color: rgba(242, 245, 255, 0.62); }
+#bb[hidden] { display: none; }
+@media (pointer: coarse) { #bb:not([hidden]) { display: grid; } }
+@media (max-width: 600px) {
+  #bb { left: 12px; bottom: calc(66px + env(safe-area-inset-bottom, 0px)); width: 66px; height: 66px; }
+}
+
+/* Azaltılmış hareket: efekt anahtarı kapalıyken (utils/settings.ts
+   `html.fx-calm` sınıfı) animasyon/geçiş süreleri kısalır. */
+html.fx-calm *,
+html.fx-calm *::before,
+html.fx-calm *::after {
+  animation-duration: 0.01ms !important;
+  transition-duration: 80ms !important;
+}

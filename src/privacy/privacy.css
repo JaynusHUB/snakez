@@ -1,0 +1,120 @@
+/* Gizlilik sayfası — sitenin görsel dili: koyu cam kart, neon kenar,
+   Chakra Petch başlık + Exo 2 gövde (self-host, CDN yok).
+   Token değerleri meta.css'teki #meta kapsamıyla birebir. */
+@import '@fontsource/chakra-petch/latin-700.css';
+@import '@fontsource/chakra-petch/latin-ext-700.css';
+@import '@fontsource/exo-2/latin-500.css';
+@import '@fontsource/exo-2/latin-ext-500.css';
+
+:root {
+  --pv-bg: #04060c;
+  --pv-text: #f2f5ff;
+  --pv-mut: #a8b2d0;
+  --pv-faint: #7b8aa6;
+  --pv-cy: #2be7ff;
+  --pv-pu: #9d5cff;
+  --pv-ln: rgb(242 245 255 / 11%);
+  --pv-font-display: 'Chakra Petch', system-ui, sans-serif;
+  --pv-font-body: 'Exo 2', system-ui, sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  min-height: 100%;
+  background: var(--pv-bg);
+  color: var(--pv-text);
+  font-family: var(--pv-font-body);
+  font-size: 16px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+.pv-wrap {
+  width: min(680px, 100% - 32px);
+  margin: 0 auto;
+  padding: max(28px, env(safe-area-inset-top)) 0 max(40px, env(safe-area-inset-bottom));
+  display: grid;
+  gap: 18px;
+  justify-items: start;
+}
+
+/* Oyuna dön: hap bağlantı, tek odak noktası değil sessiz giriş */
+.pv-back {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 20px;
+  border: 1px solid var(--pv-ln);
+  border-radius: 99px;
+  background: rgb(255 255 255 / 5%);
+  color: var(--pv-text);
+  font: 700 13px var(--pv-font-display);
+  letter-spacing: .1em;
+  text-decoration: none;
+  transition: border-color .15s;
+}
+.pv-back:hover { border-color: var(--pv-cy); }
+.pv-back:focus-visible, .pv-card a:focus-visible { outline: 2px solid var(--pv-cy); outline-offset: 2px; }
+
+/* Kart: marketle aynı teknik — iç yüzey + 1px neon kenar, ek DOM yok */
+.pv-card {
+  width: 100%;
+  padding: clamp(22px, 5vw, 36px);
+  border: 1px solid transparent;
+  border-radius: 22px;
+  background:
+    linear-gradient(#0d1220, #090d18) padding-box,
+    linear-gradient(150deg, rgb(157 92 255 / 70%), rgb(255 255 255 / 8%) 45%, rgb(43 231 255 / 65%)) border-box;
+  box-shadow: 0 30px 90px rgb(0 0 0 / 65%), 0 0 50px rgb(157 92 255 / 12%);
+}
+
+.pv-kicker {
+  margin: 0 0 6px;
+  font: 700 11px var(--pv-font-display);
+  letter-spacing: .22em;
+  color: var(--pv-cy);
+  text-transform: uppercase;
+}
+
+.pv-card h1 {
+  margin: 0;
+  font: 700 clamp(26px, 6vw, 34px)/1.15 var(--pv-font-display);
+  letter-spacing: .04em;
+}
+
+.pv-updated {
+  margin: 8px 0 0;
+  font-size: 13px;
+  color: var(--pv-faint);
+}
+
+.pv-card section + section {
+  margin-top: 22px;
+  padding-top: 22px;
+  border-top: 1px solid var(--pv-ln);
+}
+
+.pv-card h2 {
+  margin: 0 0 8px;
+  font: 700 16px var(--pv-font-display);
+  letter-spacing: .12em;
+  color: var(--pv-text);
+}
+
+.pv-card p { margin: 0 0 10px; color: var(--pv-mut); }
+.pv-card p:last-child { margin-bottom: 0; }
+.pv-card a { color: var(--pv-cy); }
+
+.pv-foot {
+  font-size: 12px;
+  color: var(--pv-faint);
+  letter-spacing: .04em;
+}
+.pv-foot a { color: var(--pv-mut); }
+
+/* Hareket yok: reduced-motion'da kapatılacak bir şey yok. */
+@media (prefers-reduced-motion: reduce) {
+  .pv-back { transition: none; }
+}

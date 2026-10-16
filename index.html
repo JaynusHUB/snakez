@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#04060C" />
+    <meta name="description" content="Snakez — tarayıcıda çalışan yılan arenası. Büyü, sıralamaya tırman." />
+    <title>Snakez</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <!-- Menünün ilk görünen ögesi: kritik yolda başlasın ki giriş
+         animasyonu sırasında boş kutu görünmesin (55 KB WebP). -->
+    <link rel="preload" href="/logo.webp" as="image" type="image/webp" fetchpriority="high" />
+  </head>
+  <body>
+    <canvas id="g" aria-hidden="true"></canvas>
+
+    <!-- Ana menü. Boş bırakılır; src/menu/menu.ts içinden doldurulur. -->
+    <div id="menu" class="mn"></div>
+
+    <!-- Mobil boost kontrolü. Menü açıkken gizli (hidden), OYNA'da görünür. -->
+    <button id="bb" aria-label="Hızlan" hidden>HIZLAN</button>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

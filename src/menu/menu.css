@@ -1,0 +1,998 @@
+/* SNAKEZ — ana menü "VİTRİN"
+   ---------------------------------------------------------------------------
+   Kompozisyon: dev bir yılan ekranı boydan boya yüzer; marka, başlık ve
+   girişler sol sütunda, liderlik sağ üstte, telemetri sağ altta durur.
+
+   İki kural bu dosyayı yönetiyor:
+
+   1) KUTU İZİ YOK. Okunabilirlik için kullanılan her karartma kenarlara
+      dayanan TAM GENİŞLİK gradyandır ya da dört yöne eriyen radyal. Tek
+      bir kenarı bile görünür dikdörtgen yok — önceki sürümde sol üst ve
+      sağ üstte kutu sınırları görünüyordu, bu düzeltildi.
+
+   2) ODAK TEK. Vitrin yılanı kahraman; geri kalan her şey ona fısıldıyor.
+      Marka gradyanı (favicon.svg) yalnızca iki yerde: logotype ve OYNA.
+
+   Token mimarisi 3 katman: primitive -> semantic -> component.           */
+
+/* ── 1. PRIMITIVE ─────────────────────────────────────────────────────────
+   Marka renkleri public/favicon.svg'deki gradientten birebir. Arena
+   renkleri oyun kodundan: Game.ts:379 / :103-104 / :399.                */
+:root {
+  --p-brand-1: #9d5cff;   /* favicon.svg stop 0 — mor      */
+  --p-brand-2: #2be7ff;   /* favicon.svg stop .55 — cyan    */
+  --p-brand-3: #a8ff3e;   /* favicon.svg stop 1 — lime     */
+  --p-ink: #f2f5ff;
+  --p-danger: #ff4650;    /* Game.ts:399 sınır halkası     */
+  --p-beat: #070a12;      /* amblem içi (SVG fill)         */
+}
+
+/* ── 2. SEMANTIC ───────────────────────────────────────────────────────── */
+.mn {
+  --s-text: var(--p-ink);
+  --s-muted: #a3aecb;
+  --s-faint: #7b8aa6;
+  --s-line: rgb(242 245 255 / 12%);
+
+  --brand: linear-gradient(94deg,
+    var(--p-brand-1) 0%, var(--p-brand-2) 52%, var(--p-brand-3) 100%);
+
+  /* Metin okunabilirliği için katman. Kenarlara dayanır; kutu oluşturmaz.
+     WCAG: vitrine yılanı (parlak gövde, L≈0.93) metnin arkasından geçtiğinde
+     kontrast 1.17:1'e düşüyordu. Bu yüzden metin yoğunluğunun olduğu
+     bölgelerde karartma çok daha koyu ve daha geniş — hâlâ kenardan
+     başlayıp ortada eriyen gradyanlar, kutu değil. */
+  --wash-left: linear-gradient(96deg,
+    rgb(4 6 12 / 99%) 0%,
+    rgb(4 6 12 / 97%) 26%,
+    rgb(4 6 12 / 92%) 42%,
+    rgb(4 6 12 / 68%) 56%,
+    rgb(4 6 12 / 0%) 78%);
+  --wash-top: linear-gradient(to bottom,
+    rgb(4 6 12 / 90%) 0%,
+    rgb(4 6 12 / 62%) 10%,
+    rgb(4 6 12 / 0%) 24%);
+  --wash-bottom: linear-gradient(to top,
+    rgb(4 6 12 / 96%) 0%,
+    rgb(4 6 12 / 84%) 12%,
+    rgb(4 6 12 / 46%) 24%,
+    rgb(4 6 12 / 0%) 40%);
+  /* Sağ üstte artık opak bir kart var (wash-right kaldırıldı: kart kendi
+     yüzeyini taşıyor, arkadaki radyal karartma gereksizdi). */
+
+  /* ── 3. COMPONENT ─────────────────────────────────────────────────── */
+  --c-pad: clamp(20px, 3.4vw, 52px);
+  --c-go-h: 62px;
+  --c-go-r: 13px;
+  --c-field-r: 11px;
+  --c-board-w: 264px;
+  /* Logo genişliği. Görselin oranı 1.5814 (şeffaf kenarlar kırpıldıktan
+     sonra) → 236px'te 149px yükseklik.
+
+     `vh` teredi SHORT EKRANLAR İÇİN: 1366x768'de destenin tepesi 362px,
+     başlık 152px, marka payı 18 + deste payı 26 → logonun dikey payı
+     ancak 120px'e kadar çıkabilir. `23vh` bunu 112px'te tutar ve
+     `fitCopy`'nin başlığı gizlemek zorunda kalmasını engeller (hesap:
+     1366x768'de `23vh` = 176.6px → logo 111.7px → marka altı 158px →
+     başlık 184..336 → deste 362 → iki tarafta da 26px pay).
+
+     Alt sınır 148px: 360px telefonda marka bandı 18..112'ye sığar,
+     `.mn-copy` `margin-top: 120px` ile boşluk bırakır.
+     Üst sınır: 1080p ve üzerinde `clamp` 236px'te oturur. */
+  --c-logo-w: clamp(148px, min(17vw, 23vh), 236px);
+  /* Yuva ölçüleri. Masaüstünde 15 yuva tek satıra SIĞMADIĞI için kaydırma
+     vardı ve her seçimde şerit "kayıyordu" (ölçülen scrollLeft 0→265→530).
+     Çözüm: geniş ekranda 8+7 olarak İKİ SATIRA SAR — kaydırma hiç gerekmez.
+     470px bant / 53px yuva / 5px aralık -> 8 yuva satır başına.
+     Yükseklik 36 -> 46: referanstaki oran (önizleme ~2/3, etiket ~1/3)
+     korunuyor; 36px'te önizleme 23px'e düşüp "üst tarafı görünmüyor"
+     izlenimi veriyordu. */
+  --chip-w: 53px;
+  --chip-h: 46px;
+  --c-tap: 100ms;
+  --c-hover: 140ms;
+  --e-ui: cubic-bezier(0.2, 0, 0, 1);
+  --e-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ── KÖK ─────────────────────────────────────────────────────────────── */
+.mn {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  font-family: var(--font-body, system-ui, sans-serif);
+  font-size: 16px;
+  line-height: 1.45;
+  color: var(--s-text);
+  -webkit-font-smoothing: antialiased;
+}
+.mn[hidden] { display: none; }
+.mn *,
+.mn *::before,
+.mn *::after { box-sizing: border-box; }
+
+/* Vitrin canvas'ı: tüm ekran, her şeyin altında ama arena üstünde */
+.mn-cv {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+}
+
+/* Menü açıkken oyun canvas'ı geri çekilir: canlılık korunur (doygunluk
+   düşer) ama vitrine yılanı kahraman olur. `filter` GPU'da çalışır,
+   yeniden boyama maliyeti getirmez. */
+body:has(.mn:not([hidden])) #g {
+  filter: saturate(0.85) brightness(0.82) contrast(1.02);
+  transition: filter 620ms var(--e-out, cubic-bezier(0.16, 1, 0.3, 1));
+}
+#g { transition: filter 420ms ease; }
+
+/* ── SCRİM: dört kenar gradyanı, ortada tamamen saydam ─────────────────
+   Önceki sürümde `.mn-head::before` gibi yerel bloklar kullanılıyordu ve
+   bunların kenarları arena üstünde görünür kutu izleri bırakıyordu. Burada
+   kutu yok: her katman ekran kenarına dayanır ve orta noktada biter. */
+.mn-scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    var(--wash-left),
+    var(--wash-top),
+    var(--wash-bottom),
+    /* Başlık bölgesi: vitrine yılanı buradan geçiyorsa bile okunacak.
+       Sol-orta odaklı, kenarlara doğru eriyen geniş bir elips. */
+    radial-gradient(64% 34% at 22% 48%,
+      rgb(4 6 12 / 88%) 0%,
+      rgb(4 6 12 / 62%) 46%,
+      rgb(4 6 12 / 0%) 78%);
+}
+
+/* ── YERLEŞİM ───────────────────────────────────────────────────────────
+   Sabit yerleşim değil: her bölge kendi kenarına yaslanır. Vitrin arada
+   serbest kalır. */
+.mn-brand,
+.mn-copy,
+.mn-board,
+.mn-deck,
+.mn-tele,
+.mn-keys {
+  position: absolute;
+  animation: mn-in 520ms var(--e-out) both;
+}
+
+.mn-brand {
+  top: calc(var(--c-pad) + env(safe-area-inset-top, 0px));
+  left: max(var(--c-pad), env(safe-area-inset-left, 0px));
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  animation-delay: 60ms;
+}
+
+/* Başlık orta bandın ÜSTÜNDE, vitrin onun önünden geçsin diye sola yaslı
+   ve ortaya göre YUKARI kaydırılmış. Ölçüldü: `top:50%` iken başlık
+   (350px) alt bandın üstüne (390px) biniyordu. */
+.mn-copy {
+  left: max(var(--c-pad), env(safe-area-inset-left, 0px));
+  top: 44%;
+  transform: translateY(-50%);
+  max-width: min(44vw, 520px);
+  animation-delay: 150ms;
+
+  /* `top` ASLA geçişten geçmesin — bu kural bir a11y tercihi değil,
+     bir BOZULMA ÖNLEMI.
+
+     `style.css`'teki reduced-motion bloğu `*` üzerine
+     `transition-duration: 80ms !important` koyar ama `transition-property`
+     bırakıldığı yerde, yani başlangıç değeri `all`'da kalır. Sonuç:
+     normalde (süre `0s`) hiç geçişi olmayan `.mn-copy`, o modda `top`'u
+     80ms boyunca akıtan bir geçiş KAZANIR.
+
+     `Menu.fitCopy()` `top`'u satır içi değiştirip ölçmek için önce
+     `style.top = ''` yapar; o 80ms içinde `getComputedStyle().top`
+     geçişin ORADAKİ değerini döndürür. Hesap o değeri "zaten üst üste
+     binmiyor" diye yorumlayıp `top`'u boş bırakır ve başlık `44%`'e
+     düşer.
+
+     Ölçüm (1920x950 / 1366x768, reducedMotion: reduce):
+       geçiş var -> copy 402-623, deck 538-836  =  **85px çakışma**
+       geçiş yok -> copy 291-512, deck 538-836  =   26px boşluk
+
+     Kullanıcının gördüğü "içe içe girmiş" tam olarak buydu.
+     `transition-property: none` hem bu yarışı ortadan kaldırır hem de
+     azaltılmış hareket modunda başlığın 80ms kaymasını (kendisi de bir
+     hareket) engeller. */
+  transition-property: none;
+}
+
+.mn-board {
+  top: calc(var(--c-pad) + env(safe-area-inset-top, 0px));
+  right: max(var(--c-pad), env(safe-area-inset-right, 0px));
+  width: var(--c-board-w);
+  max-width: 38vw;
+  animation-delay: 240ms;
+}
+
+.mn-deck {
+  left: max(var(--c-pad), env(safe-area-inset-left, 0px));
+  bottom: calc(var(--c-pad) + 62px + env(safe-area-inset-bottom, 0px));
+  width: min(44vw, 470px);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  animation-delay: 330ms;
+}
+
+/* Telemetri: sol bandın ALTINDA, sağ altta. Ölçülen çakışma skin
+   şeridiyle oluyordu (şerit 680-745px, telemetri 700-760px) — bu yüzden
+   bandın gerçek yüksekliği kadar aşağı indirildi: alan(58) + şerit(38)
+   + OYNA(62) + aralar(32) ≈ 190px. */
+.mn-tele {
+  right: max(var(--c-pad), env(safe-area-inset-right, 0px));
+  bottom: calc(var(--c-pad) * 0.55 + 30px + env(safe-area-inset-bottom, 0px));
+  display: flex;
+  align-items: flex-end;
+  gap: clamp(16px, 2.2vw, 34px);
+  animation-delay: 400ms;
+}
+
+/* Çipler sol altta, bandın ALTINDA. Ölçülen çakışma: buton 763-825px,
+   çipler 782-798px → doğrudan üst üste biniyordu. */
+/* Çipler bandın ALTINDA ve TAM YATAY: OYNA butonuyla ölçülen 5.929 px²
+   çakışma vardı. Artık butonun gerçek alt kenarının altında. */
+.mn-keys {
+  left: max(var(--c-pad), env(safe-area-inset-left, 0px));
+  right: max(var(--c-pad), env(safe-area-inset-right, 0px));
+  bottom: calc(var(--c-pad) * 0.55 + env(safe-area-inset-bottom, 0px));
+  display: flex;
+  gap: 18px;
+  margin: 0;
+  font-size: 12px;
+  color: var(--s-muted);
+  animation-delay: 440ms;
+}
+
+/* ── AD LEVHASI ───────────────────────────────────────────────────────────
+   Önizleme modunda seçili skin'in adı, vitrin yılanının başının altında.
+
+   Sorumluluk ikiye ayrılmıştır:
+     • CSS  → yalnızca BİÇİM (gradyan, harf aralığı, gölge).
+     • JS   → yalnızca KONUM: `Vitrine.placeLabel()` her karede
+              `transform` ve `opacity` yazar.
+   Konuma CSS'den dokunulsaydı iki sahip olurdu ve son yazan kazanırdı.
+
+   Kutu/panel YOK: arkasında düz bir yüzey yok; yalnızca marka gradyanı ve
+   yumuşak bir gölge. Menünün "kenarlara dayanan katmanlar, kart yok"
+   diline uyar (frontend-design + better-ui).
+
+   `position: absolute` bilinçli: `.mn` zaten `position:fixed; inset:0`
+   olduğundan koordinatlar viewport'a eşittir ve `.mn-cv` ile birebir aynı
+   uzaydadır — vitrin canvas'ı da `inset: 0` ile tam olarak bunu doldurur. */
+.mn-hero {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  margin: 0;
+  opacity: 0;
+  pointer-events: none;
+  user-select: none;
+  white-space: nowrap;
+  text-align: center;
+  will-change: transform, opacity;
+}
+
+.mn-hero em {
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 600;
+  /* `letter-spacing` sağda fazlalık bırakır; `text-indent` onu geri alır.
+     İkisi eşit ve zıt olduğunda metin optik olarak ortalanır — aksi hâlde
+     geniş harf aralıklı büyük metin her zaman sağa kaçar (better-ui). */
+  letter-spacing: 0.34em;
+  text-indent: 0.34em;
+  text-transform: uppercase;
+  color: rgb(255 255 255 / 52%);
+}
+
+.mn-hero b {
+  font-family: var(--font-display, system-ui, sans-serif);
+  font-size: clamp(24px, 2.5vw, 36px);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0.16em;
+  text-indent: 0.16em;
+  text-transform: uppercase;
+  background: var(--brand);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 2px 22px rgb(43 231 255 / 34%));
+}
+
+/* ── LOGO ───────────────────────────────────────────────────────────────
+   Kaynak: kullanıcının verdiği neon marka görseli (1983×793). İçerik
+   1175×743'tü — kalan %44 şeffaf kenardı, kırpıldı → 720×455 WebP,
+   `public/logo.webp` (55 KB). Görselin İÇİNDE hem "Snakez.io" hem
+   "YILAN ARENASI" yazdığı için ayrı `.mn-word` metin bloğu YOK —
+   marka adı iki kez yazılmaz.
+
+   EFEKT (kullanıcı isteği): SVG logo + maskeli RGB tarama + canvas'ta
+   dış hattı izleyen RGB neon. Görsel `logo.webp` değişmedi.
+     • Tarama: soldan sağa geçen mor→cyan→yeşil bandı, 6sn/tur.
+     • Kenar neon'u: fare üzerine gelince yılanın başından başlar,
+       dış hattı dolaşır (3sn/tur). Azaltılmış hareket: devre dışı. */
+.mn-logo {
+  position: relative;
+  display: block;
+  width: var(--c-logo-w);
+}
+.mn-logo svg { display: block; width: 100%; height: auto; }
+.mn-logo canvas { position: absolute; pointer-events: none; }
+
+/* ── BAŞLIK ──────────────────────────────────────────────────────────────
+   Slogan menünün ikinci cümlesi; vitrin onun önünden geçiyor. */
+.mn-head {
+  margin: 0;
+  font-family: var(--font-display, system-ui, sans-serif);
+  font-size: clamp(34px, 4.1vw, 60px);
+  font-weight: 700;
+  line-height: 1.02;
+  letter-spacing: -0.012em;
+  text-shadow: 0 2px 40px rgb(4 6 12 / 90%);
+}
+.mn-sub {
+  margin: 16px 0 0;
+  font-size: 15px;
+  letter-spacing: 0.02em;
+  color: var(--s-muted);
+  text-shadow: 0 2px 22px rgb(4 6 12 / 92%);
+}
+
+/* ── LİDERLİK ───────────────────────────────────────────────────────────
+   Gerçek bir kart: yüzey, kenarlık, yuvarlak köşe. Önceki sürümde
+   yüzeyi yoktu (metin arenanın üstündeydi); bu bir bilgi paneli olduğu
+   için çerçeve ister — dekor değil, okunabilirliğin taşıyıcısı.
+   Taç ikonu marka gradyanında; 1. satır yeşil ve vurgulu. */
+.mn-board {
+  padding: 14px 16px 12px;
+  /* ── REFERANS: kenarlık düz gri DEĞİL, marka gradyanıyla PARLIYOR ──
+     Mor (sol alt) → cyan (sağ üst) → lime. İki arka planlı teknik:
+     ilk katman `padding-box` ile iç yüzeyi, ikincisi `border-box` ile
+     yalnızca 1px kenarlığı boyar. Ek DOM gerekmez ve renk tek kaynaktan
+     gelir (`--brand`, `--p-brand-*`). */
+  border: 1px solid transparent;
+  border-radius: 16px;
+  background:
+    linear-gradient(178deg, rgb(14 18 31 / 93%) 0%, rgb(7 10 18 / 97%) 100%) padding-box,
+    var(--brand) border-box;
+  /* Dış gölge derinlik verir; iki hafif halka kenarlığın ışığını yayar
+     (mor aşağıda, cyan yukarıda) — referanstaki hale buradan gelir. */
+  box-shadow:
+    0 24px 58px -22px rgb(0 0 0 / 88%),
+    0 0 26px -4px rgb(43 231 255 / 13%),
+    0 10px 34px -14px rgb(157 92 255 / 22%),
+    inset 0 1px 0 rgb(255 255 255 / 7%);
+  /* Emniyet: satir vurgusu `margin: 0 -6px` ile icerik kutusunun disina
+     tasar; giris animasyonu sirasindaki `translateX(-10px)` onu kartin
+     KENARINDAN da disari cikariyordu (1px). `overflow:hidden` + bu kose
+     yaricapi her seyi kartin icinde tutar. Normal durumda zaten kesmez
+     (satir 1293..1539, kart 1284..1548). */
+  overflow: hidden;
+}
+
+/* ── EFEKT 1: RGB TARAMA IŞIĞI ─────────────────────────────────────────
+   Kartın ÜZERİNDEN soldan sağa geçen, ~45° eğik ışık şeridi. Şeridin
+   kendi genişliği 500px; iki ucu tamamen saydam, ortası %80-85 opak.
+   Önde (sağda) yeşil, arkada (solda) mor → ışık geçerken önce yeşil,
+   sonra mor süzülür. Şerit `mix-blend-mode: screen` ile koyu zemine
+   bindirir; `.mn-board`'un `overflow:hidden` + `border-radius:16px`
+   sınırı ışığı kartın DIŞINA ÇIKARMAZ.
+   Döngü 6sn: ilk %45'i (2.7sn) ease-in-out ile geçer, kalanı bekler. */
+.mn-scan {
+  position: absolute;
+  left: 0;
+  top: -60%;
+  width: 500px;
+  height: 220%;
+  background: linear-gradient(90deg,
+    rgb(168 85 247 / 0%) 0%,
+    rgb(168 85 247 / 80%) 30%,
+    rgb(34 211 238 / 85%) 55%,
+    rgb(52 245 160 / 80%) 80%,
+    rgb(52 245 160 / 0%) 100%);
+  mix-blend-mode: screen;
+  pointer-events: none;
+  transform: translateX(-700px) rotate(45deg);
+  animation: mn-scan 6s linear infinite;
+}
+@keyframes mn-scan {
+  0% {
+    transform: translateX(-700px) rotate(45deg);
+    animation-timing-function: cubic-bezier(0.4, 0, 0.6, 1);
+  }
+  45%  { transform: translateX(470px) rotate(45deg); }
+  100% { transform: translateX(470px) rotate(45deg); }
+}
+
+/* ── EFEKT 2: RGB KENAR TAKİBİ ─────────────────────────────────────────
+   Tek bir canvas (`logoFx.ts → initBoardFx`); fare satıra/karta gelince
+   üzerine taşınır ve neon çizgi kutunun yuvarlak dış hattını dolaşır.
+   Kartın `overflow:hidden` sınırının DIŞINDA konumlanır → parlama
+   hiçbir yerde kesilmez. */
+.mn-row-fx {
+  position: absolute;
+  pointer-events: none;
+}
+
+.mn-bt {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0 0 7px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--s-line);
+  font-family: var(--font-display, system-ui, sans-serif);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.19em;
+  color: var(--s-text);
+}
+/* Referanstaki taç DOLU siluet, kontur değil; dolgu marka gradyanı.
+   Açık hâlde drop-shadow kenarından cyan bir hale yayar. */
+.mn-crown {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  fill: url(#mg-board);
+  stroke: none;
+  filter: drop-shadow(0 0 7px rgb(43 231 255 / 45%));
+}
+.mn-live {
+  width: 5px;
+  height: 5px;
+  margin-left: auto;
+  border-radius: 50%;
+  background: var(--p-danger);
+  box-shadow: 0 0 9px var(--p-danger);
+  animation: mn-pulse 2.2s var(--e-ui) infinite;
+}
+
+.mn-list { margin: 0; padding: 0; list-style: none; }
+
+.mn-lead {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 12px 0 0;
+  padding-top: 11px;
+  border-top: 1px solid var(--s-line);
+  font-size: 11px;
+  color: var(--s-faint);
+}
+/* Referansta ikon metnin HEMEN SONUNDA değil, satırın SAĞ UCUNDA:
+   `margin-left:auto` metni sola yaslar, tacı sağa iter. Ölçüsü ayrı
+   kuraldır — `.mn-crown` başlıktaki 16px'tir. */
+.mn-lead .mn-crown {
+  width: 12px;
+  height: 12px;
+  margin-left: auto;
+  filter: drop-shadow(0 0 6px rgb(43 231 255 / 38%));
+}
+
+.mn-row {
+  display: grid;
+  grid-template-columns: 18px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 9px;
+  /* Vurgu zemini içerik kutusunun DIŞINA taşar — referanstaki hap. */
+  margin: 0 -6px;
+  border-radius: 9px;
+  font-size: 13.5px;
+  color: var(--s-muted);
+  animation: mn-row-in 400ms var(--e-out) both;
+  animation-delay: calc(var(--i, 0) * 70ms + 260ms);
+}
+/* ── 1. SATIR: referanstaki teal HAP ────────────────────────────────
+   Soldan sağa erir (%17 → %0), sağda tamamen kaybolur; ayrıca ince bir
+   iç halka kenarı tarar. Önceki düz beyaz %5 zeminden farkı: renk
+   markanın kendisi (cyan) ve gradyan olduğu için "kutu" değil, bir
+   ışık izi — kartın dilini bozmaz. */
+.mn-row:first-child {
+  background: linear-gradient(90deg,
+    rgb(43 231 255 / 17%) 0%,
+    rgb(43 231 255 / 8%) 46%,
+    rgb(43 231 255 / 0%) 100%);
+  box-shadow: inset 0 0 0 1px rgb(43 231 255 / 13%);
+}
+.mn-row em {
+  font-family: var(--font-display, system-ui, sans-serif);
+  font-style: normal;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--s-faint);
+}
+/* Referansta "1" numarası DA isimle birlikte cyan: vurgu sıra numarasında
+   değil, LİDER KİMLİĞİNDE. */
+.mn-row:first-child em { color: var(--p-brand-2); font-weight: 700; }
+.mn-row b {
+  font-weight: 600;
+  color: var(--s-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.mn-row:first-child b { color: var(--p-brand-2); font-weight: 700; }
+.mn-row span {
+  font-variant-numeric: tabular-nums;
+  font-size: 12.5px;
+  color: var(--s-muted);
+}
+/* Lider skoru yeşil — "şu an kim baskın" anlamı rengin kendisi taşır.
+   Yeşil, oyunun kendi paletinde de var (SKIN_DEFS 'Yeşil' #4ee063). */
+.mn-row:first-child span { color: #5fe08c; font-weight: 700; }
+.mn-row[data-mine="1"] b { color: var(--p-brand-2); }
+
+/* ── ALAN ────────────────────────────────────────────────────────────── */
+.mn-field { display: flex; flex-direction: column; gap: 8px; }
+.mn-field > span,
+.mn-lbl {
+  font-family: var(--font-display, system-ui, sans-serif);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  color: var(--s-faint);
+}
+
+.mn-field input {
+  width: 100%;
+  height: 58px;
+  padding: 0 18px;
+  border: 1px solid var(--s-line);
+  border-radius: var(--c-field-r);
+  /* opak: yarı sayfam zeminde beyaz yem pikselleri yazıyı bozuyordu
+     (ölçülen 1.73:1, gereken 4.5:1) */
+  background: rgb(8 11 19 / 96%);
+  color: var(--s-text);
+  font-family: var(--font-display, system-ui, sans-serif);
+  font-size: 21px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  transition: border-color var(--c-hover) var(--e-ui), box-shadow var(--c-hover) var(--e-ui);
+}
+.mn-field input::placeholder { color: rgb(163 174 203 / 40%); font-weight: 500; }
+.mn-field input:hover { border-color: rgb(242 245 255 / 26%); }
+.mn-field input:focus {
+  outline: none;
+  border-color: var(--p-brand-2);
+  box-shadow: 0 0 0 3px rgb(43 231 255 / 18%);
+}
+
+/* ── GÖRÜNÜM ŞERİDİ ─────────────────────────────────────────────────────
+   Her yuva bir skin'in GERÇEK gövdesi: zebra, gökkuşağı, bayrak desenleri
+   görünür. Seçim yalnızca renge bağlı değil — tik ikonu da var (better-ui). */
+.mn-skins { display: flex; flex-direction: column; gap: 9px; }
+
+/* 15 yuva 8+7 olarak sarılır; kaydırma yalnızca dar ekranda devreye girer.
+   470px bant / 53px yuva / 5px aralık = satır başına 8 yuva -> 2 satır.
+   Mask YOK: sarma durumunda şerit kesilmiyor, maske gereksiz yere
+   kenarları soluklaştırıyordu (yalnızca mobilde tekrar açılır). */
+.mn-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  padding-bottom: 3px;
+}
+.mn-strip::-webkit-scrollbar { display: none; }
+
+.mn-chip {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: none;
+  width: var(--chip-w);
+  height: var(--chip-h);
+  padding: 0;
+  border: 1px solid var(--s-line);
+  border-radius: 8px;
+  background: rgb(8 11 19 / 92%);
+  cursor: pointer;
+  overflow: hidden;
+  transition: border-color var(--c-hover) var(--e-ui), transform var(--c-tap) var(--e-ui);
+}
+/* Önizleme: kalan yükseklik. Etiket alanı 16px'e sabitlendi ki oran
+   her boyutta korunsun (referanstaki ~2/3 önizleme, ~1/3 etiket). */
+.mn-chip canvas { display: block; width: 100%; height: calc(100% - 16px); }
+.mn-chip u {
+  display: block;
+  height: 16px;
+  padding: 2px 0 0;
+  font-family: var(--font-display, system-ui, sans-serif);
+  font-size: 10px;
+  line-height: 12px;
+  font-weight: 500;
+  /* letter-spacing YOK: 0.02em "Gökkuşağı" (9 karakter) 53px yuvaya
+     sığmıyordu, ellipsis'e düşüyordu. */
+  letter-spacing: 0;
+  text-align: center;
+  text-decoration: none;
+  color: var(--s-faint);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.mn-chip:hover { border-color: rgb(242 245 255 / 30%); }
+.mn-chip:hover u { color: var(--s-muted); }
+.mn-chip:active { transform: scale(0.96); }
+.mn-chip[data-on="1"] {
+  border-color: transparent;
+  box-shadow: 0 0 0 2px var(--p-brand-2), 0 6px 26px -6px rgb(43 231 255 / 60%);
+}
+/* Tik rozeti ÖNİZLEMENİN sağ altındadır — etiketin üstünde.
+   Eski konum (bottom:4px) etiketin tam üzerine biniyordu: "Lavanta"
+   "Lavan"+rozet olarak görünüyordu. */
+.mn-chip[data-on="1"]::after {
+  content: "";
+  position: absolute;
+  right: 4px;
+  bottom: 20px;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: var(--p-brand-2);
+  box-shadow: 0 0 0 2px rgb(4 6 12 / 90%);
+}
+.mn-chip[data-on="1"]::before {
+  content: "";
+  position: absolute;
+  right: 7px;
+  bottom: 24.5px;
+  width: 3px;
+  height: 6px;
+  border: solid #04060c;
+  border-width: 0 2px 2px 0;
+  transform: rotate(42deg);
+  z-index: 1;
+}
+.mn-chip:focus-visible { outline: 2px solid var(--p-brand-2); outline-offset: 2px; }
+
+/* ── OYNA ──────────────────────────────────────────────────────────────
+   Menünün tek doygun renkli öğesi ve tek CTA'sı.
+   Ölçülen sorun: dolgu `#a8ff3e` durakında çok açık olduğu için siyah
+   metin 1.0:1'e (okunamaz) düşüyordu. İki çözüm denendi; `background-clip`
+   hilesi yerine dolgunun kendisini koyulaştırmak seçildi — kontrast
+   dolgu aşamasında garanti ediliyor, metin normal kalıyor. */
+.mn-go {
+  width: 100%;
+  height: var(--c-go-h);
+  border: 0;
+  border-radius: var(--c-go-r);
+  background: linear-gradient(94deg,
+    #7b3ce0 0%, #1aa9c4 54%, #5aa81f 100%);
+  color: #04060c;
+  font-family: var(--font-display, system-ui, sans-serif);
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-indent: 0.2em;
+  cursor: pointer;
+  touch-action: manipulation;
+  box-shadow: 0 10px 44px -12px rgb(43 231 255 / 62%);
+  transition: transform var(--c-tap) var(--e-ui), box-shadow var(--c-hover) var(--e-ui),
+              filter var(--c-hover) var(--e-ui);
+}
+.mn-go:hover {
+  filter: brightness(1.18) saturate(1.06);
+  box-shadow: 0 14px 56px -12px rgb(43 231 255 / 82%);
+}
+.mn-go:active { transform: scale(0.96); }
+.mn-go:focus-visible { outline: 2px solid var(--s-text); outline-offset: 3px; }
+
+/* ── TELEMETRİ ─────────────────────────────────────────────────────────
+   Sol alttan ayrılan yatay şerit; her sayı tabular. */
+.mn-tele span { display: flex; flex-direction: column; gap: 3px; }
+.mn-tele em {
+  font-style: normal;
+  font-family: var(--font-display, system-ui, sans-serif);
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  color: var(--s-faint);
+}
+.mn-tele b {
+  font-family: var(--font-display, system-ui, sans-serif);
+  font-size: 21px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+.mn-ver { color: var(--s-faint); font-family: var(--font-display, system-ui, sans-serif); font-size: 11px; letter-spacing: .1em; }
+
+/* ── İSTATİSTİK DÜĞMESİ ─────────────────────────────────────────────────
+   REKOR/OYUN/SIRA bloğu Profilim'i açar. Buton sıfırlanır, iç sütunlar
+   eskisi gibi dizilir (`.mn-tele span` kuralı torunlara da işler).
+   İpucu yalnızca hover/odakta belirir; geçişsizdir (hareket yok). */
+.mn-stats {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  gap: clamp(16px, 2.2vw, 34px);
+  margin: 0;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.mn-stats:hover { background: rgb(242 245 255 / 6%); }
+.mn-stats:active { transform: scale(0.97); }
+.mn-stats:focus-visible { outline: 2px solid var(--p-brand-2); outline-offset: 2px; }
+.mn-hint {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 6px);
+  transform: translateX(-50%);
+  display: block;
+  padding: 4px 10px;
+  border: 1px solid var(--s-line);
+  border-radius: 99px;
+  background: rgb(10 14 25 / 92%);
+  color: var(--s-muted);
+  font-family: var(--font-display, system-ui, sans-serif);
+  font-size: 10.5px;
+  letter-spacing: .12em;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+}
+.mn-stats:hover .mn-hint, .mn-stats:focus-visible .mn-hint { opacity: 1; }
+
+/* ── AYAR DİŞLİSİ + PANELİ ──────────────────────────────────────────────
+   Dişli telemetri satırında yaşar (sağ alt, her genişlikte görünür).
+   Panel ortada kart gibi açılır; menü diline uyar (kutu değil, panel). */
+.mn-gear {
+  width: 40px; height: 40px;
+  display: grid; place-items: center;
+  border-radius: 50%;
+  border: 1px solid var(--s-line);
+  background: rgb(10 14 25 / 72%);
+  color: var(--s-muted);
+  cursor: pointer;
+  transition: color var(--c-hover) var(--e-ui), border-color var(--c-hover) var(--e-ui), transform var(--c-tap) var(--e-ui);
+}
+.mn-gear svg { width: 20px; height: 20px; }
+.mn-gear:hover { color: var(--s-text); border-color: var(--p-brand-2); }
+.mn-gear:active { transform: scale(0.94); }
+.mn-gear:focus-visible { outline: 2px solid var(--p-brand-2); outline-offset: 2px; }
+.mn-set[hidden] { display: none; }
+.mn-set {
+  position: fixed;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 40;
+  width: min(340px, calc(100vw - 36px));
+  padding: 22px 22px 18px;
+  border-radius: 16px;
+  border: 1px solid var(--s-line);
+  background: rgb(10 14 25 / 96%);
+  box-shadow: 0 18px 60px rgb(0 0 0 / 55%);
+  animation: mn-in 320ms var(--e-out) both;
+}
+.mn-set h2 {
+  margin: 0;
+  font-family: var(--font-display, system-ui, sans-serif);
+  font-size: 15px; letter-spacing: .14em;
+  color: var(--s-text);
+}
+.mn-setsub {
+  margin: 14px 0 8px;
+  font-size: 12px;
+  color: var(--s-faint);
+}
+.mn-setopts { display: flex; gap: 8px; }
+.mn-setopts button {
+  flex: 1;
+  padding: 10px 0;
+  border-radius: 10px;
+  border: 1px solid var(--s-line);
+  background: transparent;
+  color: var(--s-muted);
+  font-family: var(--font-display, system-ui, sans-serif);
+  font-size: 13px;
+  cursor: pointer;
+  transition: border-color var(--c-hover) var(--e-ui), color var(--c-hover) var(--e-ui), box-shadow var(--c-hover) var(--e-ui);
+}
+.mn-setopts button:hover { color: var(--s-text); border-color: var(--p-brand-2); }
+.mn-setopts button[aria-checked="true"] {
+  color: var(--s-text);
+  border-color: var(--p-brand-2);
+  box-shadow: 0 0 0 2px var(--p-brand-2), 0 6px 26px -6px rgb(43 231 255 / 60%);
+}
+.mn-setopts button:focus-visible { outline: 2px solid var(--p-brand-2); outline-offset: 2px; }
+.mn-note { margin: 10px 0 0; font-size: 12px; color: var(--s-faint); }
+.mn-setrow {
+  margin-top: 10px; width: 100%;
+  padding: 10px 12px;
+  display: flex; justify-content: space-between; align-items: center;
+  border-radius: 10px;
+  border: 1px solid var(--s-line);
+  background: transparent;
+  color: var(--s-muted);
+  font-family: var(--font-display, system-ui, sans-serif);
+  font-size: 13px;
+  cursor: pointer;
+}
+.mn-setrow b { color: var(--s-text); }
+.mn-setrow:hover { border-color: var(--p-brand-2); }
+.mn-setrow:focus-visible { outline: 2px solid var(--p-brand-2); outline-offset: 2px; }
+.mn-setclose {
+  margin-top: 14px; width: 100%;
+  padding: 11px 0;
+  border-radius: 10px;
+  border: 1px solid var(--s-line);
+  background: transparent;
+  color: var(--s-text);
+  font-family: var(--font-display, system-ui, sans-serif);
+  font-size: 13px;
+  cursor: pointer;
+}
+.mn-setclose:hover { border-color: var(--p-brand-2); }
+.mn-setclose:focus-visible { outline: 2px solid var(--p-brand-2); outline-offset: 2px; }
+
+.mn-keys span { display: inline-flex; align-items: center; gap: 7px; }
+.mn-keys kbd {
+  font-family: var(--font-display, system-ui, sans-serif);
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  color: var(--s-text);
+  padding: 3px 8px;
+  border: 1px solid var(--s-line);
+  border-radius: 6px;
+  background: rgb(13 17 28 / 96%);  /* opak: yarı sayfamda 1.00:1 idi */
+}
+
+/* ── HAREKET ───────────────────────────────────────────────────────────
+   Giriş sıralı: marka -> başlık -> tablo -> giriş -> telemetri.
+   better-ui: çıkış girişten yumuşak, sabit küçük translateY. */
+@keyframes mn-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes mn-row-in {
+  from { opacity: 0; transform: translateX(-10px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes mn-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+.mn-copy { animation-name: mn-in-mid; }
+@keyframes mn-in-mid {
+  from { opacity: 0; transform: translateY(calc(-50% + 12px)); }
+  to   { opacity: 1; transform: translateY(-50%); }
+}
+
+/* ── DUYARLI ────────────────────────────────────────────────────────────
+   13 çözünürlükte ölçüldü (1920x1080 … 320x568). */
+
+/* Dar: sağ sütun yok, her şey tek kolon, vitrin arkada kalır.
+   `@container` yerine media query: `container-type: size` kutu yüksekliği
+   değiştiğinde yeniden değerlendirme yapıyordu ve 800px'de yanlış tetiklendi. */
+@media (max-width: 1000px) {
+  .mn-board { display: none; }
+  .mn-copy,
+  .mn-deck { width: auto; max-width: none; }
+}
+
+/* Çok dar (telefon): vitrin üstte, metin altta yığılır. */
+@media (max-width: 680px) {
+  .mn {
+    --c-pad: 18px;
+    --c-go-h: 56px;
+  }
+  .mn-copy {
+    top: auto;
+    bottom: auto;
+    transform: none;
+    margin-top: clamp(120px, 26vh, 190px);
+    max-width: none;
+    animation-name: mn-in;
+  }
+  .mn-head { font-size: clamp(28px, 8.4vw, 40px); }
+  .mn-sub { margin-top: 12px; font-size: 14px; }
+  .mn-deck {
+    /* Ölçülen hata: mobilde şerit 1090px genişliğindeydi (390px ekran).
+       `left` verilip `width` verilmediği için içerik genişliğine açılıyordu.
+       Burada hem sağ kenar sabitlenir hem de flex çocuklarına `min-width:0`
+       verilir; aksi halde `overflow-x:auto` yerine kapsayıcı büyür. */
+    right: max(var(--c-pad), env(safe-area-inset-right, 0px));
+    width: auto;
+    max-width: none;
+    bottom: calc(var(--c-pad) + 52px + env(safe-area-inset-bottom, 0px));
+    gap: 13px;
+  }
+  .mn-skins { min-width: 0; }
+  .mn-strip { min-width: 0; }
+  .mn-tele {
+    bottom: calc(var(--c-pad) + env(safe-area-inset-bottom, 0px));
+    gap: 14px;
+  }
+  .mn-tele b { font-size: 17px; }
+  .mn-keys { display: none; }
+  /* Mobilde tek satır + yatay kaydırma: 15 yuva iki satıra sığsa dikey
+     alan yetersiz kalır, kaydırma daha doğru. */
+  .mn-strip {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 10px, #000 calc(100% - 10px), transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0, #000 10px, #000 calc(100% - 10px), transparent 100%);
+  }
+  /* Mobilde 46px yükseklik korunur (referans oran); genişlik artar ki
+     etiketler mobilde de rahat okunsun. */
+  .mn-chip { width: 66px; height: 46px; }
+  .mn-field input { height: 54px; font-size: 19px; }
+}
+
+/* Kısa ekran: ikincil metni at, kapsayıcı taşmasın.
+   Eşik 620 -> 760: skin şeridi 2 satıra sarınca band 70px uzadı ve
+   1280x720'de başlıkla çakıştı (ölçülen 6855 px²). 760px altında
+   başlık gizlenir; oyunun sloganı skin listesinden önce gelmez, doğru
+   öncelik de bu. */
+@media (max-height: 760px) {
+  .mn-copy { display: none; }
+  .mn-keys { display: none; }
+}
+@media (max-height: 460px) {
+  .mn-skins { display: none; }
+}
+
+/* ── AZALTILMIŞ HAREKET ─────────────────────────────────────────────────
+   Tüm menü animasyonları kapanır. Canlılık göstergesi statik noktaya
+   döner; metin etiketi ("LİDERLİK") zaten canlılığı söylüyor, yani
+   hareket tek sinyal değil.
+   Sürücü: `html.fx-calm` sınıfı (utils/settings.ts) — OS medya sorgusu
+   değil, efekt anahtarı karar verir. */
+html.fx-calm .mn-brand,
+html.fx-calm .mn-logo,
+html.fx-calm .mn-board,
+html.fx-calm .mn-deck,
+html.fx-calm .mn-tele,
+html.fx-calm .mn-keys,
+html.fx-calm .mn-row { animation: none !important; opacity: 1 !important; transform: none; }
+
+  /* Efekt 1 (tarama ışığı) açık: hareket duyarsızlaştırma bunu da kapsar.
+     Efekt 2 (kenar takibi) kapatılmaz — kullanıcı görünmesini istiyor. */
+  html.fx-calm .mn-scan { display: none; }
+
+
+  /* `.mn-copy` BURADA `transform: none` ALMAZ — bu, menüdeki en pahalı
+     tek satırlık hataydı.
+
+     `translateY(-50%)` (.mn-copy kuralındaki) animasyon DEĞİL, dikey
+     merkezlemedir: `top: 44%` kutunun ÜSTÜNÜ değil MERKEZİNİ o hatta
+     koyar. `transform: none` onu sildiğinde başlık 44%+h/2 kadar aşağı
+     iner ve alttaki bantla biner.
+
+     Ölçüm (1920x950, reducedMotion: reduce):
+       transform: none  ->  copy 402-623, deck 538-836  =  **85px çakışma**
+       normal           ->  copy 291-512, deck 538-836  =  26px boşluk
+
+     Kullanıcı ekranında gördüğü "içe içe girmiş" tam olarak buydu.
+     Animasyonu kapat (`animation: none`), merkezlemeyi KORU — yani bu
+     kuralda `transform` hiç yazılmaz; masaüstünde temel kuraldaki
+     `translateY(-50%)`, mobilde (max-width:680px) `.mn-copy`'nin kendi
+     `transform: none`'ı geçerli kalır. */
+  html.fx-calm .mn-copy { animation: none !important; opacity: 1 !important; }
+
+  html.fx-calm .mn-live { animation: none; }
+  html.fx-calm .mn-go:active { transform: none; }
+  html.fx-calm .mn-chip:active { transform: none; }

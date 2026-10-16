@@ -1,0 +1,16 @@
+node_modules
+dist
+.fallow
+test-shots
+*.local
+.env*
+!.env.example
+.DS_Store
+
+# Denetim raporu: yerelde kalir, repoya girmez
+docs/audit-report.md
+
+# Kamuya acik surumde yer almaz (yerelde kalir): ham tasarimlar, gunluk, deneme gorselleri
+assets-src/
+progress.md
+shots/
